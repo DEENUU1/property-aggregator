@@ -1,29 +1,12 @@
-from dataclasses import dataclass
+import re
 from typing import List, Optional, Tuple, Dict, Any
 
 import requests
 from bs4 import BeautifulSoup
-import re
+
+from model import Offer, Location
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
-
-
-@dataclass
-class Param:
-    key: str
-    value: str | int
-
-
-@dataclass
-class Offer:
-    url: str
-    title: str
-    price: Optional[int] = None
-    rent: Optional[int] = None
-    city: Optional[str] = None
-    region: Optional[str] = None
-    images: List[Optional[str]] = None
-    params: List[Optional[Param]] = None
 
 
 def get_content(category: str, type_: str, page_num: int = 1) -> Optional[str]:
@@ -104,20 +87,28 @@ def parse_page(content: str) -> List[Optional[Offer]]:
         for dt_tag, dd_tag in zip(dt_tags, dd_tags):
             key = dt_tag.text.strip()
             value = dd_tag.text.strip()
-            parsed_param = Param(key=key, value=value)
+            parsed_param = {"key": key, "value": value}
             params.append(parsed_param)
 
         processed_price, processed_rent = process_price(full_price.text)
         city, region = get_city_region(full_location.text)
+        location = Location(region=region, city=city)
+
+        area = string_to_int(get_param_value(params, "Powierzchnia"))
+        room_number = string_to_int(get_param_value(params, "Liczba pokoi"))
+        floor = string_to_int(get_param_value(params, "Piętro"))
+
         offer = Offer(
             url=url.text,
             title=title.text,
+            location=location,
+            photos=images,
+            description=None,
+            area=area,
             price=processed_price.get("price"),
             rent=processed_rent.get("rent"),
-            city=city,
-            region=region,
-            images=images,
-            params=params
+            room_number=room_number,
+            floor=floor
         )
         parsed_offers.append(offer)
 
@@ -129,33 +120,22 @@ def get_city_region(full_location: str) -> Tuple[Optional[str], Optional[str]]:
     region = full_location.split(", ")[-1].strip()
     if city[0].islower():
         return None, region
-
     return city, region
 
 
 def string_to_int(string: str) -> Optional[int]:
-    result = ""
-    for val in string:
-        if val.isdigit():
-            result += val
+    numeric_part = re.sub(r'\D', '', string)
 
-    if not result:
+    if not numeric_part:
         return None
 
-    return int(result)
+    return int(numeric_part)
 
 
-def normalize(param: Param) -> Optional[Param]:
-    key, value = param.key, param.value
-
-    if key == "Powierzchnia":
-        return Param(key="meter", value=string_to_int(value))
-    elif key == "Liczba pokoi":
-        return Param(key="rooms", value=string_to_int(value))
-    elif key == "Piętro":
-        return Param(key="floor", value=string_to_int(value))
-    else:
-        return None
+def get_param_value(params: List[Dict[str, Any]], key: str) -> Any:
+    for param in params:
+        if key in param["key"]:
+            return param["value"]
 
 
 if __name__ == "__main__":
@@ -168,10 +148,7 @@ if __name__ == "__main__":
     )
     parsed_page = parse_page(init_content)
 
-    for p in parsed_page:
-        for pa in p.params:
-            print(pa)
-
+    print(parsed_page)
 
     # for t in TYPE:
     #     for category in CATEGORIES:

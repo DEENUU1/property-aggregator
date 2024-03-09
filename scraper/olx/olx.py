@@ -1,7 +1,35 @@
-import requests
+from dataclasses import dataclass
 from typing import Any, List, Dict, Optional
 
+import requests
+
 BASE_URL = "https://www.olx.pl/api/v1/offers?offset=0&limit=40&category_id=3&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5"
+
+
+@dataclass
+class Location:
+    city: str
+    region: str
+    lat: float
+    lon: float
+
+
+@dataclass
+class Param:
+    price_value: Optional[int] = None
+    price_currency: Optional[str] = None
+    key_name: Optional[str] = None
+    value: Optional[str] = None
+
+
+@dataclass
+class Offer:
+    url: str
+    title: str
+    location: Location
+    photos: List[str]
+    description: Optional[str] = None
+    params: List[Optional[Param]] = None
 
 
 def get_content(url):
@@ -30,18 +58,94 @@ def get_next_page_url(content: Dict[str, Any]) -> Optional[str]:
     return next_url.get("href")
 
 
+def parse_page(content) -> List[Optional[Offer]]:
+    offers = content.get("data", None)
+    parsed_offers = []
+
+    for offer in offers:
+        url = offer.get("url", None)
+        title = offer.get("title", None)
+
+        if url is None or title is None:
+            continue
+
+        description = offer.get("description", None)
+
+        map_data = offer.get("map")
+        lat = map_data.get("lat")
+        lon = map_data.get("lon")
+
+        location_data = offer.get("location")
+        city_name = location_data.get("city").get("name")
+        region_name = location_data.get("region").get("name")
+
+        photo_data = offer.get("photos", None)
+        photos = []
+        for photo in photo_data:
+            link = photo.get("link", None)
+            width = photo.get("width", None)
+            height = photo.get("height", None)
+
+            full_link = link.format(width=width, height=height)
+            photos.append(full_link)
+
+        params_data = offer.get("params", None)
+        parsed_params = []
+        for param in params_data:
+            label_keys = ["roomsize", "floor_select", "builttype", "floor", "type"]
+
+            price_value, price_currency, value_label, value_key = None, None, None, None
+
+            key_name = param.get("key", None)
+            if key_name == "price":
+                price_value = param.get("value", None).get("value", None)
+                price_currency = param.get("value", None).get("currency", None)
+            elif key_name in label_keys:
+                value_label = param.get("value").get("label")
+            else:
+                value_key = param.get("value").get("key")
+                if value_key == "yes" or value_key == "no":
+                    value_key = True if value_key == "yes" else False
+
+            value = None
+            if value_label:
+                value = value_label
+            if value_key:
+                value = value_key
+
+            param = Param(
+                price_value=price_value,
+                price_currency=price_currency,
+                key_name=key_name,
+                value=value
+            )
+            parsed_params.append(param)
+
+        location = Location(city=city_name, region=region_name, lat=lat, lon=lon)
+        offer = Offer(
+            url=url,
+            title=title,
+            location=location,
+            photos=photos,
+            description=description,
+            params=parsed_params
+        )
+        print(offer)
+        parsed_offers.append(offer)
+    return parsed_offers
+
+
 def run():
-
     init_page = get_content(BASE_URL)
-    next_page = get_next_page_url(init_page)
+    parsed_data = parse_page(init_page)
+    # next_page = get_next_page_url(init_page)
 
-    while next_page:
-        content = get_content(next_page)
-        next_page = get_next_page_url(content)
-        if not next_page:
-            break
-        print(next_page)
-
+    # while next_page:
+    #     content = get_content(next_page)
+    #     next_page = get_next_page_url(content)
+    #     if not next_page:
+    #         break
+    #     print(next_page)
 
 
 if __name__ == "__main__":

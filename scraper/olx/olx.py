@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass
-from typing import Any, List, Dict, Optional
+from typing import Any, List, Dict, Optional, Union, Tuple
 
 import requests
 
@@ -18,9 +18,14 @@ class Location:
 @dataclass
 class Param:
     price_value: Optional[int] = None
-    price_currency: Optional[str] = None
     key_name: Optional[str] = None
     value: Optional[str] = None
+
+
+@dataclass
+class NormalizedParams:
+    key: str
+    value: int | float | str
 
 
 @dataclass
@@ -30,7 +35,7 @@ class Offer:
     location: Location
     photos: List[str]
     description: Optional[str] = None
-    params: List[Optional[Param]] = None
+    params: List[Optional[Union[Param, NormalizedParams]]] = None
 
 
 def get_content(url):
@@ -59,6 +64,7 @@ def get_next_page_url(content: Dict[str, Any]) -> Optional[str]:
     url = next_url.get("href")
     print(url)
     return url
+
 
 def parse_page(content) -> List[Optional[Offer]]:
     offers = content.get("data", None)
@@ -96,12 +102,11 @@ def parse_page(content) -> List[Optional[Offer]]:
         for param in params_data:
             label_keys = ["roomsize", "floor_select", "builttype", "floor", "type"]
 
-            price_value, price_currency, value_label, value_key = None, None, None, None
+            price_value, value_label, value_key = None, None, None
 
             key_name = param.get("key", None)
             if key_name == "price":
                 price_value = param.get("value", None).get("value", None)
-                price_currency = param.get("value", None).get("currency", None)
             elif key_name in label_keys:
                 value_label = param.get("value").get("label")
             else:
@@ -117,7 +122,6 @@ def parse_page(content) -> List[Optional[Offer]]:
 
             param = Param(
                 price_value=price_value,
-                price_currency=price_currency,
                 key_name=key_name,
                 value=value
             )
@@ -153,7 +157,6 @@ def export_to_json(offers: List[Offer], page_num: int):
             "params": [
                 {
                     "price_value": param.price_value,
-                    "price_currency": param.price_currency,
                     "key_name": param.key_name,
                     "value": param.value,
                 }
@@ -218,28 +221,100 @@ def get_all_unique_params():
         print(u)
 
 
-# {'key_name': 'price_per_m', 'value': '5205.13'}
-# {'key_name': 'market', 'value': 'primary'}
-# {'key_name': 'm', 'value': '117'}
-# {'key_name': 'area', 'value': '170'}
-# {'key_name': 'builttype', 'value': 'Szeregowiec'}
-# {'key_name': 'floor_select', 'value': 'Parterowy z użytkowym poddaszem'}
-# {'key_name': 'rooms', 'value': 'one'}
-# {'key_name': 'furniture', 'value': True}
-# {'key_name': 'roomsize', 'value': 'Jednoosobowy'}
-# {'key_name': 'preferences', 'value': 'women'}
-# {'key_name': 'rent', 'value': '500'}
-# {'key_name': 'floor', 'value': 'Parter'}
-# {'key_name': 'type', 'value': 'Biurowe'}
-# {'key_name': 'rodzaj_nieruchomosci', 'value': 'house'}
-# {'key_name': 'rodzajtransakcji', 'value': 'sale'}
-# {'key_name': 'kraj', 'value': 'spain'}
-# {'key_name': 'lazienki', 'value': '1'}
-# {'key_name': 'surroundings', 'value': ['sea', 'lake']}
-# {'key_name': 'amenit_re', 'value': ['balcony', 'terrace']}
-# {'key_name': 'contactlanguage', 'value': ['polish']}
+def get_all_values_of_specified_param_key(name: str):
+    unique = set()
+
+    for i in range(1, 25):
+        with open(f"./data/{i}.json", "r", encoding="utf-8") as json_file:
+            data = json.load(json_file)
+
+        for offer in data:
+            params = offer.get("params", None)
+            if not params:
+                continue
+
+            for param in params:
+                if param["key_name"] == name:
+                    unique.add(param["value"])
+
+    for u in unique:
+        print(u)
+
+
+def get_mapper_value(mapper: Dict[Tuple, Any], search: str) -> Optional[Union[str, int]]:
+    for key, value in mapper.items():
+        if search in key:
+            return value
+    return None
+
+
+def normalize(param: Param) -> Optional[NormalizedParams]:
+    key_name, value = param.key_name, param.value
+    price_value = param.price_value
+
+    if price_value:
+        return NormalizedParams(key="price", value=float(price_value))
+
+    if key_name == "price_per_m":
+        return NormalizedParams(key="price_per_m", value=float(value))
+    elif key_name == "m":
+        return NormalizedParams(key="meters", value=int(value))
+    elif key_name == "area":
+        return NormalizedParams(key="area", value=int(value))
+    elif key_name == "builttype":
+        return NormalizedParams(key="building_type", value=value)  # TODO change this later to the number of object in Model
+    elif key_name == "floor_select":
+        if value.isdigit():
+            return NormalizedParams(key="floor", value=int(value))
+        else:
+            floor_mapper = {
+                ("Parter", "Parterowy"): 0,
+                ("Jednopiętrowy", "Parterowy z użytkowym poddaszem"): 1,
+                ("Powyżej 10",): 10,
+                ("Dwupiętrowy i więcej",): 2,
+            }
+            mapper_value = get_mapper_value(floor_mapper, value)
+            if mapper_value:
+                return NormalizedParams(key="building_floor", value=mapper_value)
+            return None
+    elif key_name == "floor":
+        if value.isdigit():
+            return NormalizedParams(key="floor", value=int(value))
+        else:
+            floor_mapper = {
+                ("4 i wyżej",): 4
+            }
+            mapper_value = get_mapper_value(floor_mapper, value)
+            if mapper_value:
+                return NormalizedParams(key="building_floor", value=mapper_value)
+            return None
+    elif key_name == "rooms":
+        room_mapper = {
+            ("one",): 1,
+            ("four",): 4,
+            ("three",): 3,
+            ("two",): 2,
+        }
+        mapper_value = get_mapper_value(room_mapper, value)
+        if mapper_value:
+            return NormalizedParams(key="rooms", value=mapper_value)
+        return None
+
+    elif key_name == "furniture":
+        return NormalizedParams(key="furniture", value=value)
+    elif key_name == "rent":
+        return NormalizedParams(key="rent", value=float(value))
+    elif key_name == "type":
+        # TODO map value of type based on model
+        pass
+    elif key_name == "rodzaj_nieruchomosci":
+        # TODO map value of rodzaj_nieruchomosci based on model
+        pass
+    else:
+        return None
 
 
 if __name__ == "__main__":
-    # run()
-    get_all_unique_params()
+    run()
+    # get_all_unique_params()
+    # get_all_values_of_specified_param_key("rodzajtransakcji")

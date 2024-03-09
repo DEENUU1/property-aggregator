@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple, Dict, Any
 
 import requests
 from bs4 import BeautifulSoup
+import re
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
 
@@ -17,7 +18,9 @@ class Param:
 class Offer:
     url: str
     title: str
-    full_price: Optional[str] = None
+    price: Optional[int] = None
+    rent: Optional[int] = None
+    currency: Optional[str] = None
     full_location: Optional[str] = None
     images: List[Optional[str]] = None
     params: List[Optional[Param]] = None
@@ -46,6 +49,26 @@ def is_next_page(content: str) -> bool:
     if next_button:
         return True
     return False
+
+
+def process_price(full_price: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    price, rent = None, None
+
+    if "+" in full_price:
+        pattern = re.compile(r'\b\d+\b')
+        matches = pattern.findall(full_price)
+        result = [int(match) for match in matches]
+        price, rent = result[0], result[1]
+    else:
+        pattern = re.compile(r'\b\d+\b')
+        match = pattern.search(full_price)
+        result = int(match.group() if match else None)
+        price = result
+
+    processed_price = {"price": price, "currency": "zł"}
+    processed_rent = {"rent": rent, "currency": "zł/miesiac"}
+
+    return processed_price, processed_rent
 
 
 def parse_page(content: str) -> List[Optional[Offer]]:
@@ -84,10 +107,14 @@ def parse_page(content: str) -> List[Optional[Offer]]:
             parsed_param = Param(key=key, value=value)
             params.append(parsed_param)
 
+        processed_price, processed_rent = process_price(full_price.text)
+
         offer = Offer(
             url=url,
             title=title,
-            full_price=full_price,
+            price=processed_price.get("price"),
+            rent=processed_rent.get("rent"),
+            currency="PLN",
             full_location=full_location,
             images=images,
             params=params
@@ -107,6 +134,8 @@ if __name__ == "__main__":
     )
     parsed_page = parse_page(init_content)
     print(parsed_page)
+
+
     # for t in TYPE:
     #     for category in CATEGORIES:
     #         page_num = 1

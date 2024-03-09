@@ -11,7 +11,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101
 @dataclass
 class Param:
     key: str
-    value: str
+    value: str | int
 
 
 @dataclass
@@ -133,6 +133,31 @@ def get_city_region(full_location: str) -> Tuple[Optional[str], Optional[str]]:
     return city, region
 
 
+def string_to_int(string: str) -> Optional[int]:
+    result = ""
+    for val in string:
+        if val.isdigit():
+            result += val
+
+    if not result:
+        return None
+
+    return int(result)
+
+
+def normalize(param: Param) -> Optional[Param]:
+    key, value = param.key, param.value
+
+    if key == "Powierzchnia":
+        return Param(key="meter", value=string_to_int(value))
+    elif key == "Liczba pokoi":
+        return Param(key="rooms", value=string_to_int(value))
+    elif key == "Piętro":
+        return Param(key="floor", value=string_to_int(value))
+    else:
+        return None
+
+
 if __name__ == "__main__":
     CATEGORIES = ["mieszkanie", "kawalerka", "dom", "inwestycja", "pokoj", "dzialka", "lokal", "haleimagazyny", "garaz"]
     TYPE = ["wynajem", "sprzedaz"]
@@ -144,7 +169,8 @@ if __name__ == "__main__":
     parsed_page = parse_page(init_content)
 
     for p in parsed_page:
-        print(p.city, p.region)
+        for pa in p.params:
+            print(pa)
 
 
     # for t in TYPE:

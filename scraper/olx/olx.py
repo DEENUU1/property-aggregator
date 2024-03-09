@@ -185,5 +185,61 @@ def run():
         page_num += 1
 
 
+def get_json_data(file_path):
+    with open(file_path, "r", encoding="utf-8") as json_file:
+        data = json.load(json_file)
+    return data
+
+
+def get_all_unique_params():
+
+    unique = []
+    visited = set()
+
+    for i in range(1, 25):
+        with open(f"./data/{i}.json", "r", encoding="utf-8") as json_file:
+            data = json.load(json_file)
+
+        for offer in data:
+            params = offer.get("params", None)
+            if not params:
+                continue
+
+            for param in params:
+                key_name = param.get("key_name", None)
+                value = param.get("value", None)
+
+                if key_name and value:
+                    if key_name not in visited:
+                        visited.add(key_name)
+                        unique.append({"key_name": key_name, "value": value})
+
+    for u in unique:
+        print(u)
+
+
+# {'key_name': 'price_per_m', 'value': '5205.13'}
+# {'key_name': 'market', 'value': 'primary'}
+# {'key_name': 'm', 'value': '117'}
+# {'key_name': 'area', 'value': '170'}
+# {'key_name': 'builttype', 'value': 'Szeregowiec'}
+# {'key_name': 'floor_select', 'value': 'Parterowy z użytkowym poddaszem'}
+# {'key_name': 'rooms', 'value': 'one'}
+# {'key_name': 'furniture', 'value': True}
+# {'key_name': 'roomsize', 'value': 'Jednoosobowy'}
+# {'key_name': 'preferences', 'value': 'women'}
+# {'key_name': 'rent', 'value': '500'}
+# {'key_name': 'floor', 'value': 'Parter'}
+# {'key_name': 'type', 'value': 'Biurowe'}
+# {'key_name': 'rodzaj_nieruchomosci', 'value': 'house'}
+# {'key_name': 'rodzajtransakcji', 'value': 'sale'}
+# {'key_name': 'kraj', 'value': 'spain'}
+# {'key_name': 'lazienki', 'value': '1'}
+# {'key_name': 'surroundings', 'value': ['sea', 'lake']}
+# {'key_name': 'amenit_re', 'value': ['balcony', 'terrace']}
+# {'key_name': 'contactlanguage', 'value': ['polish']}
+
+
 if __name__ == "__main__":
-    run()
+    # run()
+    get_all_unique_params()

@@ -82,6 +82,8 @@ def parse_page(content, category: str, sub_category: int) -> List[Optional[Offer
 
         location = Location(city=city_name, region=region_name, lat=lat, lon=lon)
         sub_category = "Wynajem" if sub_category == 0 else "Sprzedaż"
+        meters = get_param_value(parsed_params, "m"),
+
         offer = Offer(
             url=url,
             title=title,
@@ -91,17 +93,14 @@ def parse_page(content, category: str, sub_category: int) -> List[Optional[Offer
             category=category,
             sub_category=sub_category,
             price_per_meter=get_param_value(parsed_params, "price_per_m"),
-            meters=get_param_value(parsed_params, "m"),
             price=get_param_value(parsed_params, "price"),
-            area=get_param_value(parsed_params, "area"),
+            area=float(meters[0]),
             building_type=get_param_value(parsed_params, "builttype"),
             building_floor=get_param_value(parsed_params, "floor_select"),
             floor=get_param_value(parsed_params, "floor"),
             room_number=get_param_value(parsed_params, "rooms"),
             has_furnitures=get_param_value(parsed_params, "furniture"),
-            type=get_param_value(parsed_params, "type"),
         )
-        print(offer)
         parsed_offers.append(offer)
     return parsed_offers
 
@@ -115,7 +114,7 @@ def get_param_value(params: List[Dict[str, Any]], key: str) -> Any:
 def run():
     CATEGORIES = {
         ("Mieszkanie", 0): "https://www.olx.pl/api/v1/offers/?offset=40&limit=40&category_id=14&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5",
-        ("Mieszkanie", 1): "https://www.olx.pl/api/v1/offers/?offset=80&limit=40&category_id=15&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5",
+        # ("Mieszkanie", 1): "https://www.olx.pl/api/v1/offers/?offset=80&limit=40&category_id=15&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5",
         # ("Dom", 0): "",
         # ("Dom", 1): "",
         # ("Działka", 0): "",

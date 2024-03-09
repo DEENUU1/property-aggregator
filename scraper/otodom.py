@@ -99,18 +99,21 @@ def parse_page(content: str, category: str, sub_category: str) -> List[Optional[
         floor = string_to_int(get_param_value(params, "Piętro"))
 
         offer = Offer(
-            url=url.text,
             title=title.text,
-            location=location,
-            photos=images,
-            description=None,
+            url=url.text,
             category=category,
             sub_category=sub_category,
-            area=area,
+            location=location,
+            photos=images,
             price=processed_price.get("price"),
             rent=processed_rent.get("rent"),
+            description=None,
+            price_per_meter=None,
+            area=area,
+            building_floor=None,
+            floor=floor,
             room_number=room_number,
-            floor=floor
+            has_furnitures=None
         )
         parsed_offers.append(offer)
 

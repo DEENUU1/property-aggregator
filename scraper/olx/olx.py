@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from typing import Any, List, Dict, Optional
 
@@ -55,8 +56,9 @@ def get_next_page_url(content: Dict[str, Any]) -> Optional[str]:
     next_url = links.get("next", None)
     if not next_url:
         return None
-    return next_url.get("href")
-
+    url = next_url.get("href")
+    print(url)
+    return url
 
 def parse_page(content) -> List[Optional[Offer]]:
     offers = content.get("data", None)
@@ -130,22 +132,57 @@ def parse_page(content) -> List[Optional[Offer]]:
             description=description,
             params=parsed_params
         )
-        print(offer)
         parsed_offers.append(offer)
     return parsed_offers
 
 
+def export_to_json(offers: List[Offer], page_num: int):
+    offer_dicts = []
+    for offer in offers:
+        offer_dict = {
+            "url": offer.url,
+            "title": offer.title,
+            "location": {
+                "city": offer.location.city,
+                "region": offer.location.region,
+                "lat": offer.location.lat,
+                "lon": offer.location.lon,
+            },
+            "photos": offer.photos,
+            "description": offer.description,
+            "params": [
+                {
+                    "price_value": param.price_value,
+                    "price_currency": param.price_currency,
+                    "key_name": param.key_name,
+                    "value": param.value,
+                }
+                if param else None
+                for param in offer.params
+            ] if offer.params else None
+        }
+        offer_dicts.append(offer_dict)
+
+    with open(f"./data/{page_num}.json", "w", encoding="utf-8") as json_file:
+        json.dump(offer_dicts, json_file, indent=4)
+
+
 def run():
+    page_num = 1
+
     init_page = get_content(BASE_URL)
     parsed_data = parse_page(init_page)
-    # next_page = get_next_page_url(init_page)
-
-    # while next_page:
-    #     content = get_content(next_page)
-    #     next_page = get_next_page_url(content)
-    #     if not next_page:
-    #         break
-    #     print(next_page)
+    export_to_json(parsed_data, page_num)
+    next_page = get_next_page_url(init_page)
+    while next_page:
+        content = get_content(next_page)
+        next_page = get_next_page_url(content)
+        print(next_page)
+        if not next_page:
+            break
+        parsed_data = parse_page(content)
+        export_to_json(parsed_data, page_num)
+        page_num += 1
 
 
 if __name__ == "__main__":

@@ -54,7 +54,7 @@ def process_price(full_price: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     return processed_price, processed_rent
 
 
-def parse_page(content: str) -> List[Optional[Offer]]:
+def parse_page(content: str, category: str, sub_category: str) -> List[Optional[Offer]]:
     soup = BeautifulSoup(content, "html.parser")
     offers = soup.find_all("article")
 
@@ -104,6 +104,8 @@ def parse_page(content: str) -> List[Optional[Offer]]:
             location=location,
             photos=images,
             description=None,
+            category=category,
+            sub_category=sub_category,
             area=area,
             price=processed_price.get("price"),
             rent=processed_rent.get("rent"),
@@ -142,30 +144,25 @@ if __name__ == "__main__":
     CATEGORIES = ["mieszkanie", "kawalerka", "dom", "inwestycja", "pokoj", "dzialka", "lokal", "haleimagazyny", "garaz"]
     TYPE = ["wynajem", "sprzedaz"]
 
-    init_content = get_content(
-        category=CATEGORIES[0],
-        type_=TYPE[0],
-    )
-    parsed_page = parse_page(init_content)
-
-    print(parsed_page)
-
-    # for t in TYPE:
-    #     for category in CATEGORIES:
-    #         page_num = 1
-    #         init_content = get_content(
-    #             category=category,
-    #             type_=t,
-    #             page_num=page_num
-    #         )
-    #
-    #         next_page = is_next_page(init_content)
-    #         while is_next_page:
-    #             content = get_content(
-    #                 category=category,
-    #                 type_=t,
-    #                 page_num=page_num
-    #             )
-    #             next_page = is_next_page(content)
-    #             page_num += 1
-    #             print(page_num)
+    for t in TYPE:
+        for category in CATEGORIES:
+            page_num = 1
+            init_content = get_content(
+                category=category,
+                type_=t,
+                page_num=page_num
+            )
+            parsed_page = parse_page(init_content, category, t)
+            print(parsed_page)
+            next_page = is_next_page(init_content)
+            while is_next_page:
+                content = get_content(
+                    category=category,
+                    type_=t,
+                    page_num=page_num
+                )
+                parsed_page = parse_page(init_content, category, t)
+                print(parsed_page)
+                next_page = is_next_page(content)
+                page_num += 1
+                print(page_num)

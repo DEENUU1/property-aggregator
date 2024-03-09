@@ -1,8 +1,6 @@
-from typing import Any, List, Dict, Optional, Union, Tuple
+from typing import Any, List, Dict, Optional
 from model import Offer, Location
 import requests
-
-BASE_URL = "https://www.olx.pl/api/v1/offers?offset=0&limit=40&category_id=3&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5"
 
 
 def get_content(url):
@@ -33,7 +31,7 @@ def get_next_page_url(content: Dict[str, Any]) -> Optional[str]:
     return url
 
 
-def parse_page(content) -> List[Optional[Offer]]:
+def parse_page(content, category: str, sub_category: int) -> List[Optional[Offer]]:
     offers = content.get("data", None)
     parsed_offers = []
 
@@ -83,12 +81,15 @@ def parse_page(content) -> List[Optional[Offer]]:
             parsed_params.append(param)
 
         location = Location(city=city_name, region=region_name, lat=lat, lon=lon)
+        sub_category = "Wynajem" if sub_category == 0 else "Sprzedaż"
         offer = Offer(
             url=url,
             title=title,
             location=location,
             photos=photos,
             description=description,
+            category=category,
+            sub_category=sub_category,
             price_per_meter=get_param_value(parsed_params, "price_per_m"),
             meters=get_param_value(parsed_params, "m"),
             price=get_param_value(parsed_params, "price"),
@@ -112,19 +113,41 @@ def get_param_value(params: List[Dict[str, Any]], key: str) -> Any:
 
 
 def run():
-    page_num = 1
+    CATEGORIES = {
+        ("Mieszkanie", 0): "https://www.olx.pl/api/v1/offers/?offset=40&limit=40&category_id=14&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5",
+        ("Mieszkanie", 1): "https://www.olx.pl/api/v1/offers/?offset=80&limit=40&category_id=15&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5",
+        # ("Dom", 0): "",
+        # ("Dom", 1): "",
+        # ("Działka", 0): "",
+        # ("Działka", 1): "",
+        # ("Biura i lokale", 0): "",
+        # ("Biura i lokale", 1): "",
+        # ("Garaże i parkingi", 0): "",
+        # ("Garaże i parkingi", 1): "",
+        # ("Stancje i pokoje", 0): "",
+        # ("Stancje i pokoje", 1): "",
+        # ("Hale i magazyny", 0): "",
+        # ("Hale i magazyny", 1): "",
+        # ("Pozostałe", 0): "",
+        # ("Pozostałe", 1): ""
+    }
 
-    init_page = get_content(BASE_URL)
-    parsed_data = parse_page(init_page)
-    next_page = get_next_page_url(init_page)
-    while next_page:
-        content = get_content(next_page)
-        next_page = get_next_page_url(content)
-        print(next_page)
-        if not next_page:
-            break
-        parsed_data = parse_page(content)
-        page_num += 1
+    for key, value in CATEGORIES.items():
+        category, index = key
+
+        page_num = 1
+
+        init_page = get_content(value)
+        parsed_data = parse_page(init_page, category, index)
+        next_page = get_next_page_url(init_page)
+        while next_page:
+            content = get_content(next_page)
+            next_page = get_next_page_url(content)
+            print(next_page)
+            if not next_page:
+                break
+            parsed_data = parse_page(content, category, index)
+            page_num += 1
 
 
 if __name__ == "__main__":

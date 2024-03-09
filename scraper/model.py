@@ -17,6 +17,8 @@ class Offer:
     location: Optional[Location] = None
     photos: List[Optional[str]] = None
     description: Optional[str] = None
+    category: Optional[str] = None
+    sub_category: Optional[str] = None
     price_per_meter: Optional[float] = None
     meters: Optional[float] = None
     price: Optional[float] = None
@@ -28,4 +30,5 @@ class Offer:
     room_number: Optional[int] = None
     has_furnitures: Optional[bool] = None
     type: Optional[str] = None
+
 

@@ -20,8 +20,8 @@ class Offer:
     title: str
     price: Optional[int] = None
     rent: Optional[int] = None
-    currency: Optional[str] = None
-    full_location: Optional[str] = None
+    city: Optional[str] = None
+    region: Optional[str] = None
     images: List[Optional[str]] = None
     params: List[Optional[Param]] = None
 
@@ -108,20 +108,29 @@ def parse_page(content: str) -> List[Optional[Offer]]:
             params.append(parsed_param)
 
         processed_price, processed_rent = process_price(full_price.text)
-
+        city, region = get_city_region(full_location.text)
         offer = Offer(
-            url=url,
-            title=title,
+            url=url.text,
+            title=title.text,
             price=processed_price.get("price"),
             rent=processed_rent.get("rent"),
-            currency="PLN",
-            full_location=full_location,
+            city=city,
+            region=region,
             images=images,
             params=params
         )
         parsed_offers.append(offer)
 
     return parsed_offers
+
+
+def get_city_region(full_location: str) -> Tuple[Optional[str], Optional[str]]:
+    city = full_location.split(",")[-2].strip()
+    region = full_location.split(", ")[-1].strip()
+    if city[0].islower():
+        return None, region
+
+    return city, region
 
 
 if __name__ == "__main__":
@@ -133,7 +142,9 @@ if __name__ == "__main__":
         type_=TYPE[0],
     )
     parsed_page = parse_page(init_content)
-    print(parsed_page)
+
+    for p in parsed_page:
+        print(p.city, p.region)
 
 
     # for t in TYPE:

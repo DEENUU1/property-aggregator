@@ -1,6 +1,4 @@
-from typing import List
-
-from pydantic import BaseModel, Field, UUID4
+from pydantic import BaseModel, UUID4
 
 
 class RegionInput(BaseModel):
@@ -21,4 +19,3 @@ class CityOutput(BaseModel):
     id: UUID4
     name: str
     region_id: UUID4
-    region: RegionOutput

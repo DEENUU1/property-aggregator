@@ -7,8 +7,8 @@ from pydantic import UUID4
 
 
 router = APIRouter(
-    prefix="/region",
-    tags=["region"]
+    prefix="/location/region",
+    tags=["location"]
 )
 
 

@@ -32,9 +32,15 @@ class CityRepository:
             return True
         return False
 
+    def city_exists_by_id(self, _id: UUID4) -> bool:
+        city = self.session.query(City).filter_by(id=_id).first()
+        if city:
+            return True
+        return False
+
     # TODO update
 
-    def delete(self, city: Type[City]) -> None:
+    def delete(self, city: Type[City]) -> bool:
         self.session.delete(city)
         self.session.commit()
-        return
+        return True

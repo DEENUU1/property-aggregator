@@ -28,3 +28,7 @@ def get_db():
 
 class NotFoundError(Exception):
     pass
+
+
+class AlreadyExistsError(Exception):
+    pass

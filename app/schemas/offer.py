@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, UUID, Field
+from pydantic import BaseModel, UUID4, Field
 
 from models.offer import SubCategoryEnum, BuildingTypeEnum, CategoryEnum
 from schemas.location import CityOutput
@@ -23,11 +23,11 @@ class OfferInput(BaseModel):
     rooms: int | None
     furniture: bool | None
     photos: List[PhotoInput] | None
-    city_id: UUID
+    city_id: UUID4
 
 
 class OfferOutput(BaseModel):
-    id: UUID
+    id: UUID4
     title: str
     details_url: str
     category: CategoryEnum

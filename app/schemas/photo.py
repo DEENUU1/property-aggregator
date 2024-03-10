@@ -10,3 +10,7 @@ class PhotoOutput(BaseModel):
     id: UUID4
     url: str
     offer_id: UUID4
+
+
+class PhotoOffer(BaseModel):
+    url: str

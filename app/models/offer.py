@@ -10,15 +10,15 @@ from config.database import Base
 
 
 class CategoryEnum(str, Enum):
-    ...
+    MIESZKANIE = "Mieszkanie"
 
 
 class SubCategoryEnum(str, Enum):
-    ...
+    WYNAJEM = "Wynajem"
 
 
 class BuildingTypeEnum(str, Enum):
-    ...
+    BLOK = "Blok"
 
 
 class Offer(Base):
@@ -35,7 +35,7 @@ class Offer(Base):
     description = Column(String, nullable=True)
     price_per_m = Column(FLOAT, nullable=True)
     area = Column(FLOAT, nullable=True)
-    building_floot = Column(Integer, nullable=True)
+    building_floot = Column(Integer, nullable=True)  # todo change this to floor typo
     floor = Column(Integer, nullable=True)
     rooms = Column(Integer, nullable=True)
     furniture = Column(Boolean, nullable=True)

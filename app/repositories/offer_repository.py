@@ -4,6 +4,7 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from models.offer import Offer
+from models.photo import Photo
 from schemas.offer import OfferInput, OfferOutput
 
 

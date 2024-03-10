@@ -4,7 +4,7 @@ from pydantic import BaseModel, UUID4, Field
 
 from models.offer import SubCategoryEnum, BuildingTypeEnum, CategoryEnum
 from schemas.location import CityOutput
-from schemas.photo import PhotoInput, PhotoOutput
+from schemas.photo import PhotoInput, PhotoOutput, PhotoOffer
 
 
 class OfferInput(BaseModel):
@@ -18,11 +18,11 @@ class OfferInput(BaseModel):
     description: str | None
     price_per_m: float | None
     area: float | None
-    building_floor: int | None
+    building_floot: int | None
     floor: int | None
     rooms: int | None
     furniture: bool | None
-    photos: List[PhotoInput] | None
+    # photos: List[PhotoOffer] | None
     city_id: UUID4
 
 
@@ -38,10 +38,10 @@ class OfferOutput(BaseModel):
     description: str | None
     price_per_m: float | None
     area: float | None
-    building_floor: int | None
+    building_floot: int | None
     floor: int | None
     rooms: int | None
     furniture: bool | None
     photos: List[PhotoOutput] = Field(default_factory=list)
-    city_id: UUID
+    city_id: UUID4
     city: CityOutput = None

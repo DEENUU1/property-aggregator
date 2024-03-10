@@ -43,8 +43,8 @@ class RegionRepository:
         self.session.refresh(region)
         return RegionInput(**region.__dict__)
 
-    def delete(self, region: Type[Region]) -> None:
+    def delete(self, region: Type[Region]) -> bool:
         self.session.delete(region)
         self.session.commit()
-        return
+        return True
 

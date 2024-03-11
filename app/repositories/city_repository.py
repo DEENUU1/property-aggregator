@@ -35,6 +35,9 @@ class CityRepository:
     def get_by_id(self, _id: UUID4) -> Type[City]:
         return self.session.query(City).filter_by(id=_id).first()
 
+    def get_by_name(self, name: str) -> Type[City]:
+        return self.session.query(City).filter_by(name=name).first()
+
     def city_exists_by_name(self, name: str) -> bool:
         city = self.session.query(City).filter_by(name=name).first()
         if city:

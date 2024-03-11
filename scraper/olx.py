@@ -44,10 +44,6 @@ def parse_page(content, category: str, sub_category: int) -> List[Optional[Offer
 
         description = offer.get("description", None)
 
-        map_data = offer.get("map")
-        lat = map_data.get("lat")
-        lon = map_data.get("lon")
-
         location_data = offer.get("location")
         city_name = location_data.get("city").get("name")
         region_name = location_data.get("region").get("name")
@@ -80,7 +76,7 @@ def parse_page(content, category: str, sub_category: int) -> List[Optional[Offer
             param = {"key_name": key_name, "value": value}
             parsed_params.append(param)
 
-        location = Location(city=city_name, region=region_name, lat=lat, lon=lon)
+        location = Location(city=city_name, region=region_name)
         sub_category = "Wynajem" if sub_category == 0 else "Sprzedaż"
         meters = get_param_value(parsed_params, "m"),
 

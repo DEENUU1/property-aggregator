@@ -10,15 +10,28 @@ from config.database import Base
 
 
 class CategoryEnum(str, Enum):
-    MIESZKANIE = "Mieszkanie"
+    MIESZKANIE = "Mieszkanie"  # or kawalerka
+    POKOJ = "Pokój"
+    DOM = "Dom"
+    DZIALKA = "DZIAŁKA"
+    BIURA_I_LOKALE = "Biura i lokale"
+    GARAZE_I_PARKINGI = "Garaże i parkingi"
+    STANCJE_I_POKOJE = "Stancje i pokoje"
+    HALE_I_MAGAZYNY = "Hale i magazyny"
+    POZOSTALE = "Pozostałe"  # Inwestycje
 
 
 class SubCategoryEnum(str, Enum):
     WYNAJEM = "Wynajem"
+    SPRZEDAZ = "Sprzedaż"
 
 
 class BuildingTypeEnum(str, Enum):
+    APARTAMENTOWIEC = "Apartamentowiec"
     BLOK = "Blok"
+    KAMIENICA = "Kamienica"
+    POZOSTALE = "Pozostałe"
+    LOFT = "Loft"
 
 
 class Offer(Base):

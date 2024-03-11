@@ -25,6 +25,9 @@ class RegionRepository:
     def get_by_id(self, _id: UUID4) -> Type[Region]:
         return self.session.query(Region).filter_by(id=_id).first()
 
+    def get_by_name(self, name: str) -> Type[Region]:
+        return self.session.query(Region).filter_by(name=name).first()
+
     def region_exists_by_id(self, _id: UUID4) -> bool:
         region = self.session.query(Region).filter_by(id=_id).first()
         if region:

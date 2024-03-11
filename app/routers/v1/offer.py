@@ -3,9 +3,8 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from config.database import get_db
-from schemas.offer import OfferInput
+from schemas.offer import OfferInput, OfferScraper
 from services.offer_service import OfferService
-from models.offer import Offer
 
 
 router = APIRouter(
@@ -17,6 +16,12 @@ router = APIRouter(
 @router.post("")
 def create(offers: OfferInput, session: Session = Depends(get_db)):
     _service = OfferService(session).create(offers)
+    return _service
+
+
+@router.post("/scraper")
+def create_scraper(offer: OfferScraper, session: Session = Depends(get_db)):
+    _service = OfferService(session).create_scraper(offer)
     return _service
 
 

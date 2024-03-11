@@ -27,6 +27,26 @@ class OfferInput(BaseModel):
     city_id: UUID4
 
 
+class OfferScraper(BaseModel):
+    title: str
+    details_url: str
+    category: CategoryEnum
+    sub_category: SubCategoryEnum
+    building_type: BuildingTypeEnum | None
+    price: float | None
+    rent: float | None
+    description: str | None
+    price_per_m: float | None
+    area: float | None
+    building_floot: int | None
+    floor: int | None
+    rooms: int | None
+    furniture: bool | None
+    photos: List[PhotoInput]
+    region_name: str
+    city_name: str
+
+
 class OfferOutput(BaseModel):
     id: UUID4
     title: str

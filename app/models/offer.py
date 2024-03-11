@@ -1,13 +1,12 @@
 import uuid
 from enum import Enum
 
-from sqlalchemy import Column, Integer, String, FLOAT, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, FLOAT, Boolean, ForeignKey, DateTime, func
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from config.database import Base
-from models.photo import Photo
 
 
 class CategoryEnum(str, Enum):
@@ -43,3 +42,5 @@ class Offer(Base):
     city_id = Column(UUID(as_uuid=True), ForeignKey("cities.id"))
     city = relationship("City", back_populates="offers")
     photos = relationship("Photo", back_populates="offer")
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())

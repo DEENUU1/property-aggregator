@@ -76,7 +76,9 @@ class OfferRepository:
                     region=RegionOutput(
                         id=offer.city.region.id, name=offer.city.region.name
                     )
-                )
+                ),
+                "created_at": offer.created_at,
+                "updated_at": offer.updated_at
             })
 
         return offer_list

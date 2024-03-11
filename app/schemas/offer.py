@@ -5,6 +5,7 @@ from pydantic import BaseModel, UUID4
 from models.offer import SubCategoryEnum, BuildingTypeEnum, CategoryEnum
 from schemas.location import CityOutput
 from schemas.photo import PhotoInput
+from datetime import datetime
 
 
 class OfferInput(BaseModel):
@@ -44,3 +45,5 @@ class OfferOutput(BaseModel):
     furniture: bool | None
     photos: List[PhotoInput]
     city: CityOutput
+    created_at: datetime
+    updated_at: datetime

@@ -4,7 +4,7 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from models.location import City
-from schemas.location import CityInput, CityOutput
+from schemas.location import CityInput, CityOutput, RegionOutput
 
 
 class CityRepository:
@@ -21,7 +21,16 @@ class CityRepository:
 
     def get_all(self) -> List[Optional[CityOutput]]:
         cities = self.session.query(City).all()
-        return [CityOutput(**city.__dict__) for city in cities]
+        return [
+            CityOutput(
+                id=city.id,
+                name=city.name,
+                region=RegionOutput(
+                    id=city.region.id, name=city.region.name
+                )
+            )
+            for city in cities
+        ]
 
     def get_by_id(self, _id: UUID4) -> Type[City]:
         return self.session.query(City).filter_by(id=_id).first()

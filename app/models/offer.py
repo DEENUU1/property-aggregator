@@ -41,5 +41,5 @@ class Offer(Base):
     rooms = Column(Integer, nullable=True)
     furniture = Column(Boolean, nullable=True)
     city_id = Column(UUID(as_uuid=True), ForeignKey("cities.id"))
-    # city = relationship("City", back_populates="offers")
+    city = relationship("City", back_populates="offers")
     photos = relationship("Photo", back_populates="offer")

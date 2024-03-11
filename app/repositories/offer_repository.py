@@ -2,9 +2,11 @@ from typing import List, Type, Dict, Any
 
 from pydantic import UUID4
 from sqlalchemy.orm import Session
+
 from models.offer import Offer
-from schemas.offer import OfferInput, OfferOutput
 from models.photo import Photo
+from schemas.location import CityOutput, RegionOutput
+from schemas.offer import OfferInput, OfferOutput
 
 
 class OfferRepository:
@@ -68,7 +70,13 @@ class OfferRepository:
                 "rooms": offer.rooms,
                 "furniture": offer.furniture,
                 "photos": photo_list,
-                # "city": offer.city_id,
+                "city": CityOutput(
+                    id=offer.city.id,
+                    name=offer.city.name,
+                    region=RegionOutput(
+                        id=offer.city.region.id, name=offer.city.region.name
+                    )
+                )
             })
 
         return offer_list

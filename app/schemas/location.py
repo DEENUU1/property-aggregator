@@ -18,4 +18,5 @@ class CityInput(BaseModel):
 class CityOutput(BaseModel):
     id: UUID4
     name: str
-    region_id: UUID4
+    region: RegionOutput
+

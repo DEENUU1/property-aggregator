@@ -23,7 +23,7 @@ class OfferInput(BaseModel):
     rooms: int | None
     furniture: bool | None
     photos: List[PhotoInput]
-    # city_id: UUID4
+    city_id: UUID4
 
 
 class OfferOutput(BaseModel):
@@ -43,5 +43,4 @@ class OfferOutput(BaseModel):
     rooms: int | None
     furniture: bool | None
     photos: List[PhotoInput]
-    # city_id: UUID4
-    # city: CityOutput = None
+    city: CityOutput

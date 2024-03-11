@@ -22,4 +22,4 @@ class City(Base):
     name = Column(String, nullable=False)
     region_id = Column(UUID(as_uuid=True), ForeignKey("regions.id"))
     region = relationship("Region", back_populates="cities")
-    # offers = relationship("Offer", back_populates="city")
+    offers = relationship("Offer", back_populates="city")

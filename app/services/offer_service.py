@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any
 
 from pydantic import UUID4
 from sqlalchemy.orm import Session
@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from config.database import NotFoundError, AlreadyExistsError
 from repositories.offer_repository import OfferRepository
 from schemas.offer import OfferInput, OfferOutput
+from models.offer import Offer
 
 
 class OfferService:
@@ -13,7 +14,7 @@ class OfferService:
     def __init__(self, session: Session):
         self.repository = OfferRepository(session)
 
-    def create(self, offer: OfferInput) -> OfferInput:
+    def create(self, offer: OfferInput) -> Offer:
         if self.repository.offer_exists_by_url(offer.details_url):
             raise AlreadyExistsError("Offer already exists")
         offer_obj = self.repository.create(offer)
@@ -26,7 +27,7 @@ class OfferService:
         self.repository.delete(offer)
         return True
 
-    def get_all(self) -> List[OfferOutput]:
+    def get_all(self) -> List[Dict[str, List[Dict[str, Any]] | Any]]:
         return self.repository.get_all()
 
     def get_by_id(self, _id: UUID4) -> OfferOutput:

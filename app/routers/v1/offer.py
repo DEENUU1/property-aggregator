@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends
 from pydantic import UUID4
 from sqlalchemy.orm import Session
@@ -7,6 +5,8 @@ from sqlalchemy.orm import Session
 from config.database import get_db
 from schemas.offer import OfferInput
 from services.offer_service import OfferService
+from models.offer import Offer
+
 
 router = APIRouter(
     prefix="/offer",

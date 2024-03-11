@@ -1,10 +1,10 @@
 from typing import List
 
-from pydantic import BaseModel, UUID4, Field
+from pydantic import BaseModel, UUID4
 
 from models.offer import SubCategoryEnum, BuildingTypeEnum, CategoryEnum
 from schemas.location import CityOutput
-from schemas.photo import PhotoInput, PhotoOutput, PhotoOffer
+from schemas.photo import PhotoInput
 
 
 class OfferInput(BaseModel):
@@ -22,8 +22,8 @@ class OfferInput(BaseModel):
     floor: int | None
     rooms: int | None
     furniture: bool | None
-    # photos: List[PhotoOffer] | None
-    city_id: UUID4
+    photos: List[PhotoInput]
+    # city_id: UUID4
 
 
 class OfferOutput(BaseModel):
@@ -42,6 +42,6 @@ class OfferOutput(BaseModel):
     floor: int | None
     rooms: int | None
     furniture: bool | None
-    photos: List[PhotoOutput] = Field(default_factory=list)
-    city_id: UUID4
-    city: CityOutput = None
+    photos: List[PhotoInput]
+    # city_id: UUID4
+    # city: CityOutput = None

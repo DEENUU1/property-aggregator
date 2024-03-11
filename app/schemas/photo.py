@@ -3,7 +3,6 @@ from pydantic import BaseModel, UUID4
 
 class PhotoInput(BaseModel):
     url: str
-    offer_id: UUID4
 
 
 class PhotoOutput(BaseModel):
@@ -11,6 +10,3 @@ class PhotoOutput(BaseModel):
     url: str
     offer_id: UUID4
 
-
-class PhotoOffer(BaseModel):
-    url: str

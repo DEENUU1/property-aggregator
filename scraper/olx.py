@@ -195,12 +195,12 @@ def run():
         next_page = value
         while next_page:
             content = get_content(next_page)
-            next_page = get_next_page_url(content)
-            print(next_page)
-            if not next_page:
-                break
             parsed_data = parse_page(content, category, index)
             save_offers(parsed_data)
+
+            next_page = get_next_page_url(content)
+            if not next_page:
+                break
 
 
 if __name__ == "__main__":

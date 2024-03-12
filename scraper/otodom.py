@@ -5,6 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 
 from model import Offer, Location
+from save import CategoryEnum, SubCategoryEnum, save_offers
+
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
 
@@ -90,21 +92,25 @@ def parse_page(content: str, category: str, sub_category: str) -> List[Optional[
             parsed_param = {"key": key, "value": value}
             params.append(parsed_param)
 
-        processed_price, processed_rent = process_price(full_price.text)
+        if full_price:
+            processed_price, processed_rent = process_price(full_price.text)
+        else:
+            processed_price, processed_rent = {}, {}
         city, region = get_city_region(full_location.text)
-        location = Location(region=region, city=city)
+        location = Location(region=region.capitalize(), city=city)
 
         area = string_to_int(get_param_value(params, "Powierzchnia"))
         room_number = string_to_int(get_param_value(params, "Liczba pokoi"))
         floor = string_to_int(get_param_value(params, "Piętro"))
 
+        full_url = f"otodom.pl{url.get("href")}"
+
         offer = Offer(
             title=title.text,
-            url=url.text,
-            category=category,
-            sub_category=sub_category,
-            location=location,
-            photos=images,
+            url=full_url,
+            category=map_category(category),
+            sub_category=map_sub_category(sub_category),
+            building_type=None,
             price=processed_price.get("price"),
             rent=processed_rent.get("rent"),
             description=None,
@@ -113,7 +119,9 @@ def parse_page(content: str, category: str, sub_category: str) -> List[Optional[
             building_floor=None,
             floor=floor,
             room_number=room_number,
-            has_furnitures=None
+            has_furnitures=None,
+            photos=images,
+            location=location,
         )
         parsed_offers.append(offer)
 
@@ -129,6 +137,9 @@ def get_city_region(full_location: str) -> Tuple[Optional[str], Optional[str]]:
 
 
 def string_to_int(string: str) -> Optional[int]:
+    if string is None:
+        return None
+
     numeric_part = re.sub(r'\D', '', string)
 
     if not numeric_part:
@@ -143,6 +154,31 @@ def get_param_value(params: List[Dict[str, Any]], key: str) -> Any:
             return param["value"]
 
 
+def map_category(category: str) -> str:
+    mapper = {
+        "mieszkanie": CategoryEnum.MIESZKANIE,
+        "kawalerka": CategoryEnum.MIESZKANIE,
+        "dom": CategoryEnum.DOM,
+        "inwestycja": CategoryEnum.BIURA_I_LOKALE,
+        "pokoj": CategoryEnum.POKOJ,
+        "dzialka": CategoryEnum.DZIALKA,
+        "lokal": CategoryEnum.BIURA_I_LOKALE,
+        "haleimagazyny": CategoryEnum.HALE_I_MAGAZYNY,
+        "garaz": CategoryEnum.GARAZE_I_PARKINGI
+    }
+    if category not in mapper:
+        return CategoryEnum.POZOSTALE
+    return mapper[category]
+
+
+def map_sub_category(sub_category: str) -> str:
+    mapper = {
+        "wynajem": SubCategoryEnum.WYNAJEM,
+        "sprzedaz": SubCategoryEnum.SPRZEDAZ,
+    }
+    return mapper[sub_category]
+
+
 if __name__ == "__main__":
     CATEGORIES = ["mieszkanie", "kawalerka", "dom", "inwestycja", "pokoj", "dzialka", "lokal", "haleimagazyny", "garaz"]
     TYPE = ["wynajem", "sprzedaz"]
@@ -150,22 +186,15 @@ if __name__ == "__main__":
     for t in TYPE:
         for category in CATEGORIES:
             page_num = 1
-            init_content = get_content(
-                category=category,
-                type_=t,
-                page_num=page_num
-            )
-            parsed_page = parse_page(init_content, category, t)
-            print(parsed_page)
-            next_page = is_next_page(init_content)
-            while is_next_page:
+            next_page = True
+            while next_page:
                 content = get_content(
                     category=category,
                     type_=t,
                     page_num=page_num
                 )
-                parsed_page = parse_page(init_content, category, t)
-                print(parsed_page)
+                parsed_page = parse_page(content, category, t)
+                save_offers(parsed_page)
+
                 next_page = is_next_page(content)
                 page_num += 1
-                print(page_num)

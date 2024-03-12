@@ -1,6 +1,7 @@
 from typing import Any, List, Dict, Optional
 from model import Offer, Location
 import requests
+from save import save_offers
 
 
 def get_content(url):
@@ -135,14 +136,17 @@ def run():
         init_page = get_content(value)
         parsed_data = parse_page(init_page, category, index)
         next_page = get_next_page_url(init_page)
-        while next_page:
-            content = get_content(next_page)
-            next_page = get_next_page_url(content)
-            print(next_page)
-            if not next_page:
-                break
-            parsed_data = parse_page(content, category, index)
-            page_num += 1
+
+        save_offers(parsed_data)
+
+        # while next_page:
+        #     content = get_content(next_page)
+        #     next_page = get_next_page_url(content)
+        #     print(next_page)
+        #     if not next_page:
+        #         break
+        #     parsed_data = parse_page(content, category, index)
+        #     page_num += 1
 
 
 if __name__ == "__main__":

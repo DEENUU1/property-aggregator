@@ -31,12 +31,10 @@ class OfferService:
 
         if not self.region_repository.region_exists_by_name(offer.region_name):
             self.region_repository.create(RegionInput(name=offer.region_name))
-
         region = self.region_repository.get_by_name(offer.region_name)
 
         if not self.city_repository.city_exists_by_name(offer.city_name):
             self.city_repository.create(CityInput(name=offer.city_name, region_id=region.id))
-
         city = self.city_repository.get_by_name(offer.city_name)
 
         offer_obj = self.repository.create_scraper(offer, city.id)

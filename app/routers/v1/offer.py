@@ -13,31 +13,31 @@ router = APIRouter(
 )
 
 
+# @router.post("")
+# def create(offers: OfferInput, session: Session = Depends(get_db)):
+#     _service = OfferService(session).create(offers)
+#     return _service
+
+
 @router.post("")
-def create(offers: OfferInput, session: Session = Depends(get_db)):
-    _service = OfferService(session).create(offers)
-    return _service
-
-
-@router.post("/scraper")
 def create_scraper(offer: OfferScraper, session: Session = Depends(get_db)):
     _service = OfferService(session).create_scraper(offer)
     return _service
 
 
-@router.delete("/{_id}")
-def delete(_id: UUID4, session: Session = Depends(get_db)):
-    _service = OfferService(session).delete(_id)
-    return _service
-
-
-@router.get("")
-def get_all(session: Session = Depends(get_db)):
-    _service = OfferService(session).get_all()
-    return _service
-
-
-@router.get("/{_id}")
-def get_details(_id: UUID4, session: Session = Depends(get_db)):
-    _service = OfferService(session).get_by_id(_id)
-    return _service
+# @router.delete("/{_id}")
+# def delete(_id: UUID4, session: Session = Depends(get_db)):
+#     _service = OfferService(session).delete(_id)
+#     return _service
+#
+#
+# @router.get("")
+# def get_all(session: Session = Depends(get_db)):
+#     _service = OfferService(session).get_all()
+#     return _service
+#
+#
+# @router.get("/{_id}")
+# def get_details(_id: UUID4, session: Session = Depends(get_db)):
+#     _service = OfferService(session).get_by_id(_id)
+#     return _service

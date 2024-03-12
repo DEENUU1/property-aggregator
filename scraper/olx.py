@@ -1,7 +1,7 @@
 from typing import Any, List, Dict, Optional
 from model import Offer, Location
 import requests
-from save import save_offers
+from save import save_offers, SubCategoryEnum
 
 
 def get_content(url):
@@ -78,25 +78,29 @@ def parse_page(content, category: str, sub_category: int) -> List[Optional[Offer
             parsed_params.append(param)
 
         location = Location(city=city_name, region=region_name)
-        sub_category = "Wynajem" if sub_category == 0 else "Sprzedaż"
         meters = get_param_value(parsed_params, "m"),
 
+        rent = get_param_value(parsed_params, "rent")
+        if rent:
+            rent = float(rent)
+
         offer = Offer(
-            url=url,
             title=title,
-            location=location,
-            photos=photos,
-            description=description,
+            url=url,
             category=category,
-            sub_category=sub_category,
-            price_per_meter=get_param_value(parsed_params, "price_per_m"),
-            price=get_param_value(parsed_params, "price"),
-            area=float(meters[0]),
+            sub_category=map_sub_category(sub_category),
             building_type=get_param_value(parsed_params, "builttype"),
-            building_floor=get_param_value(parsed_params, "floor_select"),
-            floor=get_param_value(parsed_params, "floor"),
-            room_number=get_param_value(parsed_params, "rooms"),
+            price=float(get_param_value(parsed_params, "price")),
+            rent=rent,
+            description=remove_html_tags(description),
+            price_per_meter=float(get_param_value(parsed_params, "price_per_m")),
+            area=float(meters[0]),
+            building_floor=map_floor(get_param_value(parsed_params, "floor_select")),
+            floor=map_floor(get_param_value(parsed_params, "floor")),
+            room_number=map_room_number(get_param_value(parsed_params, "rooms")),
             has_furnitures=get_param_value(parsed_params, "furniture"),
+            photos=photos,
+            location=location,
         )
         parsed_offers.append(offer)
     return parsed_offers
@@ -106,6 +110,59 @@ def get_param_value(params: List[Dict[str, Any]], key: str) -> Any:
     for param in params:
         if key in param["key_name"]:
             return param["value"]
+
+
+def remove_html_tags(text: Optional[str]) -> Optional[str]:
+    if not text:
+        return None
+    # TODO implement
+    return text
+
+
+def map_floor(floor: Optional[str]) -> Optional[int]:
+    if not floor:
+        return None
+
+    mapper = {
+        "8": 8,
+        "7": 7,
+        "6": 6,
+        "2": 2,
+        "Parter": 0,
+        "1": 1,
+        "3": 3,
+        "5": 5,
+        "10": 10,
+        "Powyżej 10": 10,
+        "4": 4,
+    }
+    if floor not in mapper:
+        return None
+    return mapper[floor]
+
+
+def map_sub_category(sub_category: int) -> str:
+    sub_categories = {
+        0: SubCategoryEnum.WYNAJEM,
+        1: SubCategoryEnum.SPRZEDAZ
+    }
+    return sub_categories[sub_category]
+
+
+def map_room_number(room_numer: Optional[str]) -> Optional[int]:
+    if not room_numer:
+        return None
+
+    mapper = {
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4
+    }
+
+    if room_numer not in mapper:
+        return None
+    return mapper[room_numer]
 
 
 def run():
@@ -131,22 +188,15 @@ def run():
     for key, value in CATEGORIES.items():
         category, index = key
 
-        page_num = 1
-
-        init_page = get_content(value)
-        parsed_data = parse_page(init_page, category, index)
-        next_page = get_next_page_url(init_page)
-
-        save_offers(parsed_data)
-
-        # while next_page:
-        #     content = get_content(next_page)
-        #     next_page = get_next_page_url(content)
-        #     print(next_page)
-        #     if not next_page:
-        #         break
-        #     parsed_data = parse_page(content, category, index)
-        #     page_num += 1
+        next_page = value
+        while next_page:
+            content = get_content(next_page)
+            next_page = get_next_page_url(content)
+            print(next_page)
+            if not next_page:
+                break
+            parsed_data = parse_page(content, category, index)
+            save_offers(parsed_data)
 
 
 if __name__ == "__main__":

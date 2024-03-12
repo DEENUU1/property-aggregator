@@ -31,10 +31,10 @@ def create_scraper(offer: OfferScraper, session: Session = Depends(get_db)):
 #     return _service
 #
 #
-# @router.get("")
-# def get_all(session: Session = Depends(get_db)):
-#     _service = OfferService(session).get_all()
-#     return _service
+@router.get("")
+def get_all(session: Session = Depends(get_db)):
+    _service = OfferService(session).get_all()
+    return _service
 #
 #
 # @router.get("/{_id}")

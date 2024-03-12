@@ -15,7 +15,6 @@ class Offer:
     category: Optional[str]
     sub_category: Optional[str]
     building_type: Optional[str] = None
-
     price: Optional[float] = None
     rent: Optional[float] = None
     description: Optional[str] = None

@@ -1,11 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
-
-@dataclass
-class Location:
-    region: Optional[str] = None
-    city: Optional[str] = None
+from .location import Location
 
 
 @dataclass
@@ -26,5 +22,3 @@ class Offer:
     has_furnitures: Optional[bool] = None
     photos: List[Optional[str]] = None
     location: Optional[Location] = None
-
-

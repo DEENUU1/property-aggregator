@@ -1,35 +1,21 @@
-from typing import List, Optional, Dict, Any
-from enum import Enum
-import requests
-from model import Offer
 import json
+from typing import Dict, Any
 
-class CategoryEnum(str, Enum):
-    MIESZKANIE = "Mieszkanie"  # or kawalerka
-    POKOJ = "Pokój"
-    DOM = "Dom"
-    DZIALKA = "DZIAŁKA"
-    BIURA_I_LOKALE = "Biura i lokale"
-    GARAZE_I_PARKINGI = "Garaże i parkingi"
-    STANCJE_I_POKOJE = "Stancje i pokoje"
-    HALE_I_MAGAZYNY = "Hale i magazyny"
-    POZOSTALE = "Pozostałe"  # Inwestycje
+import requests
 
-
-class SubCategoryEnum(str, Enum):
-    WYNAJEM = "Wynajem"
-    SPRZEDAZ = "Sprzedaż"
-
-
-class BuildingTypeEnum(str, Enum):
-    APARTAMENTOWIEC = "Apartamentowiec"
-    BLOK = "Blok"
-    KAMIENICA = "Kamienica"
-    POZOSTALE = "Pozostałe"
-    LOFT = "Loft"
+from data.offer import Offer
 
 
 def map_offer(offer: Offer) -> Dict[str, Any]:
+    """
+    Map Offer object attributes to a dictionary.
+
+    Args:
+        offer (Offer): The offer object to be mapped.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing mapped offer data.
+    """
     photos = [{"url": item} for item in offer.photos]
     data = {
         "title": offer.title,
@@ -54,6 +40,15 @@ def map_offer(offer: Offer) -> Dict[str, Any]:
 
 
 def post(offer: Dict[str, Any]) -> bool:
+    """
+    Post offer data to the server.
+
+    Args:
+        offer (Dict[str, Any]): A dictionary containing offer data.
+
+    Returns:
+        bool: True if the offer is successfully saved, False otherwise.
+    """
     try:
         response = requests.post(
             "http://localhost:8000/api/v1/offer",
@@ -77,7 +72,17 @@ def post(offer: Dict[str, Any]) -> bool:
         return False
 
 
-def save_offers(offers: List[Offer]) -> bool:
-    for offer in offers:
+def save_offer(offer: Offer) -> bool:
+    """
+    Save offer by mapping, then posting it to the server.
+
+    Args:
+        offer (Offer): The offer object to be saved.
+    """
+    try:
         mapped_offer = map_offer(offer)
         post(mapped_offer)
+        return True
+    except Exception as e:
+        print(f"Save offer error: {e}")
+        return False

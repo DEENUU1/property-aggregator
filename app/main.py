@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-
 from config.database import Base, engine
 from config.settings import settings
 from routers.api import router

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
@@ -13,10 +13,10 @@ router = APIRouter(
 )
 
 
-# @router.post("")
-# def create(offers: OfferInput, session: Session = Depends(get_db)):
-#     _service = OfferService(session).create(offers)
-#     return _service
+@router.post("")
+def create(offers: OfferInput, session: Session = Depends(get_db)):
+    _service = OfferService(session).create(offers)
+    return _service
 
 
 @router.post("")
@@ -25,19 +25,23 @@ def create_scraper(offer: OfferScraper, session: Session = Depends(get_db)):
     return _service
 
 
-# @router.delete("/{_id}")
-# def delete(_id: UUID4, session: Session = Depends(get_db)):
-#     _service = OfferService(session).delete(_id)
-#     return _service
-#
-#
-@router.get("")
-def get_all(session: Session = Depends(get_db)):
-    _service = OfferService(session).get_all()
+@router.delete("/{_id}")
+def delete(_id: UUID4, session: Session = Depends(get_db)):
+    _service = OfferService(session).delete(_id)
     return _service
-#
-#
-# @router.get("/{_id}")
-# def get_details(_id: UUID4, session: Session = Depends(get_db)):
-#     _service = OfferService(session).get_by_id(_id)
-#     return _service
+
+
+@router.get("")
+def get_all(
+        session: Session = Depends(get_db),
+        page: int = Query(1, gt=0),
+        page_size: int = Query(15, qt=0)
+):
+    _service = OfferService(session).get_all(offset=page, page_size=page_size)
+    return _service
+
+
+@router.get("/{_id}")
+def get_details(_id: UUID4, session: Session = Depends(get_db)):
+    _service = OfferService(session).get_by_id(_id)
+    return _service

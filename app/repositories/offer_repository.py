@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from models.offer import Offer
 from models.photo import Photo
 from schemas.location import CityOutput, RegionOutput
-from schemas.offer import OfferInput, OfferOutput, OfferScraper
+from schemas.offer import OfferInput, OfferOutput, OfferScraper, OfferList
 
 
 class OfferRepository:
@@ -62,8 +62,8 @@ class OfferRepository:
         offer = self.session.query(Offer).filter_by(id=_id).first()
         return OfferOutput(**offer.__dict__)
 
-    def get_all(self) -> List[Dict[str, List[Dict[str, Any]] | Any]]:
-        offers = self.session.query(Offer).all()
+    def get_all(self, offset: int = 1, page_limit: int = 15) -> OfferList:
+        offers = self.session.query(Offer).offset(offset).limit(page_limit).all()
 
         offer_list = []
         for offer in offers:
@@ -96,7 +96,8 @@ class OfferRepository:
                 "updated_at": offer.updated_at
             })
 
-        return offer_list
+        result = OfferList(offers=offer_list, page=offset, page_size=len(offer_list))
+        return result
 
     def delete(self, offer: Type[Offer]) -> bool:
         self.session.delete(offer)

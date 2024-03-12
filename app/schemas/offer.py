@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any
 
 from pydantic import BaseModel, UUID4
 
@@ -67,3 +67,9 @@ class OfferOutput(BaseModel):
     city: CityOutput
     created_at: datetime
     updated_at: datetime
+
+
+class OfferList(BaseModel):
+    page: int
+    page_size: int
+    offers: List[Dict[str, Any]]

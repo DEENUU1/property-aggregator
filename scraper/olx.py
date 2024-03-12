@@ -116,6 +116,9 @@ def remove_html_tags(text: Optional[str]) -> Optional[str]:
     if not text:
         return None
     # TODO implement
+    HTML_TAGS = ["<br />", "</ul>", "<ul>", "<li>", "/li>", "<p>", "</p>", "<strong>", "</strong>"]
+    for tag in HTML_TAGS:
+        text = text.replace(tag, "")
     return text
 
 
@@ -168,6 +171,7 @@ def map_room_number(room_numer: Optional[str]) -> Optional[int]:
 def run():
     CATEGORIES = {
         ("Mieszkanie", 0): "https://www.olx.pl/api/v1/offers/?offset=40&limit=40&category_id=14&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5",
+        # TODO add url for each category and subcategory
         # ("Mieszkanie", 1): "https://www.olx.pl/api/v1/offers/?offset=80&limit=40&category_id=15&filter_refiners=spell_checker&sl=18c34ade124x23bc10a5",
         # ("Dom", 0): "",
         # ("Dom", 1): "",

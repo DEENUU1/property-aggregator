@@ -39,7 +39,7 @@ def map_offer(offer: Offer) -> Dict[str, Any]:
         "building_type": offer.building_type,
         "price": offer.price,
         "rent": offer.rent,
-        "description": None,
+        "description": offer.description,
         "price_per_m": offer.price_per_meter,
         "area": offer.area,
         "building_floot": offer.building_floor,

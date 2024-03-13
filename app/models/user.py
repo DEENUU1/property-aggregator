@@ -1,7 +1,6 @@
 import uuid
 
-from sqlalchemy import Column
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, Column, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
 from config.database import Base
@@ -16,3 +15,5 @@ class User(Base):
     hashed_password = Column(String)
     is_superuser = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())

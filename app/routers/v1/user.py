@@ -6,6 +6,7 @@ from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
 from config.settings import settings
 from schemas.user import TokenData, UserIn
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(
     prefix="/user",
@@ -17,4 +18,11 @@ router = APIRouter(
 def register(data: UserIn, session: Session = Depends(get_db)):
     _service = UserService(session)
     return _service.create(data)
+
+
+@router.post("/login")
+def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_db)):
+    _service = UserService(session)
+    return _service.login(data)
+
 

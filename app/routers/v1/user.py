@@ -7,6 +7,8 @@ from fastapi.security import OAuth2PasswordBearer
 from config.settings import settings
 from schemas.user import TokenData, UserIn
 from fastapi.security import OAuth2PasswordRequestForm
+from auth.auth import get_current_user
+
 
 router = APIRouter(
     prefix="/user",
@@ -26,3 +28,6 @@ def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depend
     return _service.login(data)
 
 
+@router.get("/me")
+def me(user: UserIn = Depends(get_current_user)):
+    return user

@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     TITLE: str = os.getenv("TITLE")
     # SQLITE connection string
     SQLITE_CONNECTION_STRING: str = "sqlite:///database.db" #os.getenv("SQLITE_CONNECTION_STRING")
+    # JWT
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
+    ALGORITHM: str = os.getenv("ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: str = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 
 settings = Settings()

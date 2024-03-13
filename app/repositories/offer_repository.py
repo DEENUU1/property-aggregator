@@ -1,8 +1,10 @@
-from typing import List, Type, Dict, Any
+from typing import Type
 
 from pydantic import UUID4
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
+from enums.offer_sort import OfferSortEnum
 from models.offer import Offer
 from models.photo import Photo
 from schemas.location import CityOutput, RegionOutput
@@ -62,8 +64,59 @@ class OfferRepository:
         offer = self.session.query(Offer).filter_by(id=_id).first()
         return OfferOutput(**offer.__dict__)
 
-    def get_all(self, offset: int = 1, page_limit: int = 15) -> OfferList:
-        offers = self.session.query(Offer).offset(offset).limit(page_limit).all()
+    def get_all(
+            self,
+            offset: int = 1,
+            page_limit: int = 15,
+            category: str = None,
+            sub_category: str = None,
+            building_type: str = None,
+            price_min: int = None,
+            price_max: int = None,
+            area_min: int = None,
+            area_max: int = None,
+            rooms: int = None,
+            furniture: bool = None,
+            floor: int = None,
+            query: str = None,
+            sort_by: OfferSortEnum = OfferSortEnum.NEWEST,
+    ) -> OfferList:
+        offers = self.session.query(Offer)
+
+        if query:
+            offers = offers.filter(Offer.title.like(f"%{query}%"))
+
+        if category:
+            offers = offers.filter(Offer.category == category)
+        if sub_category:
+            offers = offers.filter(Offer.sub_category == sub_category)
+        if building_type:
+            offers = offers.filter(Offer.building_type == building_type)
+        if price_min:
+            offers = offers.filter(Offer.price >= price_min)
+        if price_max:
+            offers = offers.filter(Offer.price <= price_max)
+        if area_min:
+            offers = offers.filter(Offer.area >= area_min)
+        if area_max:
+            offers = offers.filter(Offer.area <= area_max)
+        if rooms:
+            offers = offers.filter(Offer.rooms == rooms)
+        if furniture is not None:
+            offers = offers.filter(Offer.furniture == furniture)
+        if floor:
+            offers = offers.filter(Offer.floor == floor)
+
+        if sort_by == OfferSortEnum.NEWEST:
+            offers = offers.order_by(desc(Offer.created_at))
+        elif sort_by == OfferSortEnum.OLDEST:
+            offers = offers.order_by(asc(Offer.created_at))
+        elif sort_by == OfferSortEnum.PRICE_LOWEST:
+            offers = offers.order_by(asc(Offer.price))
+        elif sort_by == OfferSortEnum.PRICE_HIGHEST:
+            offers = offers.order_by(desc(Offer.price))
+
+        offers = offers.offset(offset).limit(page_limit).all()
 
         offer_list = []
         for offer in offers:

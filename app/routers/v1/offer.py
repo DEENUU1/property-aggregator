@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from config.database import get_db
 from schemas.offer import OfferInput, OfferScraper
 from services.offer_service import OfferService
-
+from enums.offer_sort import OfferSortEnum
 
 router = APIRouter(
     prefix="/offer",
@@ -35,9 +35,37 @@ def delete(_id: UUID4, session: Session = Depends(get_db)):
 def get_all(
         session: Session = Depends(get_db),
         page: int = Query(1, gt=0),
-        page_size: int = Query(15, qt=0)
+        page_size: int = Query(15, qt=0),
+        category: str = Query(None),
+        sub_category: str = Query(None),
+        building_type: str = Query(None),
+        price_min: int = Query(None),
+        price_max: int = Query(None),
+        area_min: int = Query(None),
+        area_max: int = Query(None),
+        rooms: int = Query(None),
+        furniture: bool = Query(None),
+        floor: int = Query(None),
+        query: str = Query(None),
+        sort_by: OfferSortEnum = Query(OfferSortEnum.NEWEST)
+        # TODO add filter by city and region
 ):
-    _service = OfferService(session).get_all(offset=page, page_size=page_size)
+    _service = OfferService(session).get_all(
+        offset=page,
+        page_size=page_size,
+        category=category,
+        sub_category=sub_category,
+        building_type=building_type,
+        price_min=price_min,
+        price_max=price_max,
+        area_min=area_min,
+        area_max=area_max,
+        rooms=rooms,
+        furniture=furniture,
+        floor=floor,
+        query=query,
+        sort_by=sort_by,
+    )
     return _service
 
 

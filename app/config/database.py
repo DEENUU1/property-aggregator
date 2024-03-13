@@ -24,11 +24,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-class NotFoundError(Exception):
-    pass
-
-
-class AlreadyExistsError(Exception):
-    pass

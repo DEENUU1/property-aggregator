@@ -1,7 +1,7 @@
 from pydantic import UUID4
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
-from config.database import NotFoundError, AlreadyExistsError
 from models.offer import Offer
 from repositories.city_repository import CityRepository
 from repositories.offer_repository import OfferRepository
@@ -20,13 +20,13 @@ class OfferService:
 
     def create(self, offer: OfferInput) -> Offer:
         if self.repository.offer_exists_by_url(offer.details_url):
-            raise AlreadyExistsError("Offer already exists")
+            raise HTTPException(status_code=400, detail="Offer already exists")
         offer_obj = self.repository.create(offer)
         return offer_obj
 
     def create_scraper(self, offer: OfferScraper) -> Offer:
         if self.repository.offer_exists_by_url(offer.details_url):
-            raise AlreadyExistsError("Offer already exists")
+            raise HTTPException(status_code=400, detail="Offer already exists")
 
         if not self.region_repository.region_exists_by_name(offer.region_name):
             self.region_repository.create(RegionInput(name=offer.region_name))
@@ -41,7 +41,7 @@ class OfferService:
 
     def delete(self, _id: int) -> bool:
         if not self.repository.offer_exists_by_id(_id):
-            raise NotFoundError("Offer not found")
+            raise HTTPException(status_code=404, detail="Offer not found")
         offer = self.repository.get_offer_by_id(_id)
         self.repository.delete(offer)
         return True
@@ -82,5 +82,5 @@ class OfferService:
 
     def get_by_id(self, _id: UUID4) -> OfferOutput:
         if not self.repository.offer_exists_by_id(_id):
-            raise NotFoundError("Offer not found")
+            raise HTTPException(status_code=404, detail="Offer not found")
         return self.repository.get_details(_id)

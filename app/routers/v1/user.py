@@ -2,10 +2,7 @@ from fastapi import APIRouter, Depends
 from services.user_service import UserService
 from config.database import get_db
 from sqlalchemy.orm import Session
-from jose import JWTError, jwt
-from fastapi.security import OAuth2PasswordBearer
-from config.settings import settings
-from schemas.user import TokenData, UserIn
+from schemas.user import UserIn
 from fastapi.security import OAuth2PasswordRequestForm
 from auth.auth import get_current_user
 

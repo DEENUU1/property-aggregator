@@ -10,5 +10,3 @@ router = APIRouter(
 def health():
     """ Check if the service is running correctly """
     return {"status": "ok"}
-
-

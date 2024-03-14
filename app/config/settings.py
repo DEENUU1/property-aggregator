@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
     # Origins
     ORIGINS: str = os.getenv("ORIGINS")
+    # Redis & Celery
+    BROKER: str = os.getenv("BROKER")
+    BACKEND: str = os.getenv("BACKEND")
 
 
 settings = Settings()

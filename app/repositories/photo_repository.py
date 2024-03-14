@@ -25,7 +25,7 @@ class PhotoRepository:
             return True
         return False
 
-    def get_by_id(self, id: UUID4) -> Optional[Type[Photo]]:
+    def get_by_id(self, id: UUID4) -> Type[Photo]:
         return self.session.query(Photo).filter_by(id=id).first()
 
     def delete(self, photo: Type[Photo]) -> bool:

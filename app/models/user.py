@@ -2,7 +2,7 @@ import uuid
 
 from sqlalchemy import String, Boolean, Column, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-
+from sqlalchemy.orm import relationship
 from config.database import Base
 
 
@@ -17,3 +17,5 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
+    favorites = relationship("Favorite", back_populates="user")

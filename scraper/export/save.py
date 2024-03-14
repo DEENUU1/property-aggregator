@@ -59,7 +59,7 @@ def post(offer: Dict[str, Any]) -> bool:
             }
         )
         response.raise_for_status()
-        if response.status_code != 200:
+        if response.status_code != 201:
             print(f"Offer not saved, {response.status_code}")
             return False
         print("Offer saved")

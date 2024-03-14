@@ -19,6 +19,12 @@ def create_city(data: CityInput, session: Session = Depends(get_db)):
     return _service.create(data)
 
 
+@router.get("/region/{region_id}", status_code=200, response_model=List[CityOutput])
+def get_cities_by_region(region_id: UUID4, session: Session = Depends(get_db)):
+    _service = CityService(session)
+    return _service.get_all_by_region(region_id)
+
+
 @router.get("", status_code=200, response_model=List[CityOutput])
 def get_cities(session: Session = Depends(get_db)):
     _service = CityService(session)
@@ -29,3 +35,9 @@ def get_cities(session: Session = Depends(get_db)):
 def delete_city(_id: UUID4, session: Session = Depends(get_db)):
     _service = CityService(session)
     return _service.delete(_id)
+
+
+@router.put("/{_id}", status_code=200, response_model=CityInput)
+def update_city(_id: UUID4, data: CityInput, session: Session = Depends(get_db)):
+    _service = CityService(session)
+    return _service.update(_id, data)

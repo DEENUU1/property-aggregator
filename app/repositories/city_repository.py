@@ -21,6 +21,14 @@ class CityRepository:
 
     def get_all(self) -> List[Optional[CityOutput]]:
         cities = self.session.query(City).all()
+        return self._map_city_to_schema_list(cities)
+
+    def get_all_by_region(self, region_id: UUID4) -> List[Optional[CityOutput]]:
+        cities = self.session.query(City).filter_by(region_id=region_id).all()
+        return self._map_city_to_schema_list(cities)
+
+    @staticmethod
+    def _map_city_to_schema_list(cities: List[Type[City]]) -> List[CityOutput]:
         return [
             CityOutput(
                 id=city.id,
@@ -50,7 +58,12 @@ class CityRepository:
             return True
         return False
 
-    # TODO update
+    def update(self, city: Type[City], data: CityInput) -> CityInput:
+        for key, value in data.model_dump(exclude_none=True).items():
+            setattr(city, key, value)
+        self.session.commit()
+        self.session.refresh(city)
+        return CityInput(**city.__dict__)
 
     def delete(self, city: Type[City]) -> bool:
         self.session.delete(city)

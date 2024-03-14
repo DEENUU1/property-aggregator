@@ -6,7 +6,7 @@ router = APIRouter(
 )
 
 
-@router.get("")
+@router.get("", status_code=200)
 def health():
     """ Check if the service is running correctly """
     return {"status": "ok"}

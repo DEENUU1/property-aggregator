@@ -13,25 +13,25 @@ router = APIRouter(
 )
 
 
-@router.post("")
+@router.post("", status_code=201, response_model=OfferInput)
 def create(offers: OfferInput, session: Session = Depends(get_db)):
     _service = OfferService(session).create(offers)
     return _service
 
 
-@router.post("/scraper")
+@router.post("/scraper", status_code=201)
 def create_scraper(offer: OfferScraper, session: Session = Depends(get_db)):
     _service = OfferService(session).create_scraper(offer)
     return _service
 
 
-@router.delete("/{_id}")
+@router.delete("/{_id}", status_code=204)
 def delete(_id: UUID4, session: Session = Depends(get_db)):
     _service = OfferService(session).delete(_id)
     return _service
 
 
-@router.get("")
+@router.get("", status_code=200)
 def get_all(
         session: Session = Depends(get_db),
         page: int = Query(1, gt=0),
@@ -69,7 +69,7 @@ def get_all(
     return _service
 
 
-@router.get("/{_id}")
+@router.get("/{_id}", status_code=200)
 def get_details(_id: UUID4, session: Session = Depends(get_db)):
     _service = OfferService(session).get_by_id(_id)
     return _service

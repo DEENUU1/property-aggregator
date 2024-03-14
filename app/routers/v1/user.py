@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.post("/register")
+@router.post("/register", status_code=201)
 def register(data: UserIn, session: Session = Depends(get_db)):
     _service = UserService(session)
     return _service.create(data)
@@ -25,6 +25,6 @@ def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depend
     return _service.login(data)
 
 
-@router.get("/me")
+@router.get("/me", status_code=200)
 def me(user: UserIn = Depends(get_current_user)):
     return user

@@ -19,7 +19,7 @@ def create(offers: OfferInput, session: Session = Depends(get_db)):
     return _service
 
 
-@router.post("")
+@router.post("/scraper")
 def create_scraper(offer: OfferScraper, session: Session = Depends(get_db)):
     _service = OfferService(session).create_scraper(offer)
     return _service

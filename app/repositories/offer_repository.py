@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Dict, Any, List
 
 from pydantic import UUID4
 from sqlalchemy import asc, desc
@@ -60,9 +60,11 @@ class OfferRepository:
         offer = self.session.query(Offer).filter_by(id=_id).first()
         return offer
 
-    def get_details(self, _id: UUID4) -> OfferOutput:
+    def get_details(self, _id: UUID4) -> Dict[str, Any]:
         offer = self.session.query(Offer).filter_by(id=_id).first()
-        return OfferOutput(**offer.__dict__)
+        photo_list = [{"url": photo.url} for photo in offer.photos]
+
+        return self._map_model_to_schema(offer, photo_list)
 
     def get_all(
             self,
@@ -121,33 +123,8 @@ class OfferRepository:
         offer_list = []
         for offer in offers:
             photo_list = [{"url": photo.url} for photo in offer.photos]
-            offer_list.append({
-                "id": offer.id,
-                "title": offer.title,
-                "details_url": offer.details_url,
-                "category": offer.category,
-                "sub_category": offer.sub_category,
-                "building_type": offer.building_type,
-                "price": offer.price,
-                "rent": offer.rent,
-                "description": offer.description,
-                "price_per_m": offer.price_per_m,
-                "area": offer.area,
-                "building_floor": offer.building_floot,
-                "floor": offer.floor,
-                "rooms": offer.rooms,
-                "furniture": offer.furniture,
-                "photos": photo_list,
-                "city": CityOutput(
-                    id=offer.city.id,
-                    name=offer.city.name,
-                    region=RegionOutput(
-                        id=offer.city.region.id, name=offer.city.region.name
-                    )
-                ),
-                "created_at": offer.created_at,
-                "updated_at": offer.updated_at
-            })
+            offer_mapped = self._map_model_to_schema(offer, photo_list)
+            offer_list.append(offer_mapped)
 
         result = OfferList(offers=offer_list, page=offset, page_size=len(offer_list))
         return result
@@ -156,3 +133,34 @@ class OfferRepository:
         self.session.delete(offer)
         self.session.commit()
         return True
+
+    @staticmethod
+    def _map_model_to_schema(offer: Type[Offer], photo_list: List[Dict]) -> Dict[str, Any]:
+        data = {
+            "id": offer.id,
+            "title": offer.title,
+            "details_url": offer.details_url,
+            "category": offer.category,
+            "sub_category": offer.sub_category,
+            "building_type": offer.building_type,
+            "price": offer.price,
+            "rent": offer.rent,
+            "description": offer.description,
+            "price_per_m": offer.price_per_m,
+            "area": offer.area,
+            "building_floor": offer.building_floot,
+            "floor": offer.floor,
+            "rooms": offer.rooms,
+            "furniture": offer.furniture,
+            "photos": photo_list,
+            "city": CityOutput(
+                id=offer.city.id,
+                name=offer.city.name,
+                region=RegionOutput(
+                    id=offer.city.region.id, name=offer.city.region.name
+                )
+            ),
+            "created_at": offer.created_at,
+            "updated_at": offer.updated_at
+        }
+        return data

@@ -51,7 +51,7 @@ def post(offer: Dict[str, Any]) -> bool:
     """
     try:
         response = requests.post(
-            "http://localhost:8000/api/v1/offer",
+            "http://localhost:8000/api/v1/offer/scraper",
             data=json.dumps(offer),
             headers={
                 "accept": "application/json",

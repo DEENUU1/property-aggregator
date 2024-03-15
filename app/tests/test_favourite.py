@@ -6,13 +6,32 @@ import pytest
 from conftest import test_get_db
 from models.offer import BuildingTypeEnum, CategoryEnum, SubCategoryEnum
 from repositories.city_repository import CityRepository
+from repositories.favourite_repository import FavouriteRepository
 from repositories.offer_repository import OfferRepository
 from repositories.region_repository import RegionRepository
+from repositories.user_repository import UserRepository
+from schemas.favourite import FavouriteInput
 from schemas.location import CityInput, RegionInput
 from schemas.offer import OfferScraper
 from schemas.photo import PhotoInput
+from schemas.user import UserIn
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+@pytest.fixture()
+def user(test_get_db):
+    repository = UserRepository(test_get_db)
+    hashed_password = "test_hasshed_password"
+    user = repository.create(
+        UserIn(
+            email="test@example.com",
+            username="test_user",
+            password="test_password"
+        ),
+        hashed_password=hashed_password
+    )
+    return user
 
 
 @pytest.fixture()
@@ -50,35 +69,23 @@ def offer(test_get_db, city):
         region_name="Łódzkie",
         city_name="Łódź",
     )
-    return data
 
-
-def test_success_create_offer_scraper_object(test_get_db, offer, city):
     repository = OfferRepository(test_get_db)
-    offer = repository.create_scraper(offer, city.id)
-    assert offer.title == "test offer"
-    assert offer.details_url == "https://google.com"
-    assert offer.category == CategoryEnum.POKOJ
-    assert offer.sub_category == SubCategoryEnum.WYNAJEM
-    assert offer.building_type == BuildingTypeEnum.POZOSTALE
-    assert offer.price == 999.999
-    assert offer.rent == 100
-    assert offer.price_per_m == 100
-    assert offer.area == 100
-    assert offer.building_floot == 1
-    assert offer.floor == 1
-    assert offer.rooms == 1
-    assert offer.furniture == True
-    assert offer.photos[0].url == "https://google.com/img123"
+    offer = repository.create_scraper(data, city.id)
+    return offer
 
 
-def test_success_offer_exists_by_url(test_get_db, offer, city):
-    repository = OfferRepository(test_get_db)
-    offer = repository.create_scraper(offer, city.id)
-    assert repository.offer_exists_by_url(offer.details_url)
+def test_success_create_favourite_object(test_get_db, offer, user):
+    repository = FavouriteRepository(test_get_db)
+    favourite = repository.create(FavouriteInput(user_id=user.id, offer_id=offer.id))
+    assert favourite.user_id == user.id
+    assert favourite.offer_id == offer.id
 
 
-def test_success_offer_exists_by_id(test_get_db, offer, city):
-    repository = OfferRepository(test_get_db)
-    offer = repository.create_scraper(offer, city.id)
-    assert repository.offer_exists_by_id(offer.id)
+def test_get_all_by_user(test_get_db, offer, user):
+    repository = FavouriteRepository(test_get_db)
+    repository.create(FavouriteInput(user_id=user.id, offer_id=offer.id))
+
+    user_favourites = repository.get_all_by_user(user.id)
+    assert len(user_favourites) == 1
+    assert user_favourites[0].offer_id == offer.id

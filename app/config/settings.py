@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 import os
 from dotenv import load_dotenv
+from typing import Optional
 
 load_dotenv()
 
@@ -8,20 +9,20 @@ load_dotenv()
 class Settings(BaseSettings):
     # FastAPI
     # Debug should be set to False on production
-    DEBUG: bool = os.getenv("DEBUG") == "True"
+    DEBUG: Optional[bool] = os.getenv("DEBUG") == "True"
     # Title is the name of application
-    TITLE: str = os.getenv("TITLE")
+    TITLE: Optional[str] = os.getenv("TITLE")
     # SQLITE connection string
-    SQLITE_CONNECTION_STRING: str = "sqlite:///database.db" #os.getenv("SQLITE_CONNECTION_STRING")
+    SQLITE_CONNECTION_STRING: Optional[str] = "sqlite:///database.db" #os.getenv("SQLITE_CONNECTION_STRING")
     # JWT
-    SECRET_KEY: str = os.getenv("SECRET_KEY")
-    ALGORITHM: str = os.getenv("ALGORITHM")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+    SECRET_KEY: Optional[str] = os.getenv("SECRET_KEY")
+    ALGORITHM: Optional[str] = os.getenv("ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: Optional[int] = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
     # Origins
-    ORIGINS: str = os.getenv("ORIGINS")
+    ORIGINS: Optional[str] = os.getenv("ORIGINS")
     # Redis & Celery
-    BROKER: str = os.getenv("BROKER")
-    BACKEND: str = os.getenv("BACKEND")
+    BROKER: Optional[str] = os.getenv("BROKER")
+    BACKEND: Optional[str] = os.getenv("BACKEND")
 
 
 settings = Settings()

@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.post("", status_code=201, response_model=RegionInput)
+@router.post("", status_code=201, response_model=RegionOutput)
 def create_region(data: RegionInput, session: Session = Depends(get_db)):
     _service = RegionService(session)
     return _service.create(data)

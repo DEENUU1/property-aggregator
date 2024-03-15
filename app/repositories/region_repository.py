@@ -11,12 +11,12 @@ class RegionRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, data: RegionInput) -> RegionInput:
+    def create(self, data: RegionInput) -> RegionOutput:
         region = Region(**data.model_dump(exclude_none=True))
         self.session.add(region)
         self.session.commit()
         self.session.refresh(region)
-        return RegionInput(**region.__dict__)
+        return RegionOutput(id=region.id, name=region.name)
 
     def get_all(self) -> List[Optional[RegionOutput]]:
         regions = self.session.query(Region).all()

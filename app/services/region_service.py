@@ -11,7 +11,7 @@ class RegionService:
     def __init__(self, session: Session):
         self.repository = RegionRepository(session)
 
-    def create(self, data: RegionInput) -> RegionInput:
+    def create(self, data: RegionInput) -> RegionOutput:
         if self.repository.region_exists_by_name(data.name):
             raise HTTPException(status_code=400, detail="Region already exists")
         return self.repository.create(data)

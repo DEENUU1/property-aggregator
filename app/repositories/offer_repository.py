@@ -8,7 +8,7 @@ from enums.offer_sort import OfferSortEnum
 from models.offer import Offer
 from models.photo import Photo
 from schemas.location import CityOutput, RegionOutput
-from schemas.offer import OfferInput, OfferOutput, OfferScraper, OfferList
+from schemas.offer import OfferInput, OfferScraper, OfferList
 
 
 class OfferRepository:

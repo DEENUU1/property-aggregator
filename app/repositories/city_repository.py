@@ -12,12 +12,12 @@ class CityRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, data: CityInput) -> CityOutput:
+    def create(self, data: CityInput) -> CityInput:
         city = City(**data.model_dump(exclude_none=True))
         self.session.add(city)
         self.session.commit()
         self.session.refresh(city)
-        return CityOutput(**city.__dict__)
+        return CityInput(**city.__dict__)
 
     def get_all(self) -> List[Optional[CityOutput]]:
         cities = self.session.query(City).all()

@@ -16,7 +16,7 @@ class NotificationFilterRepository:
         self.session.add(notification)
         self.session.commit()
         self.session.refresh(notification)
-        return NotificationFilterOutput(**notification.dict(), id=notification.id)
+        return NotificationFilterOutput(**notification.__dict__)
 
     def notification_exists_by_id(self, _id: UUID4) -> bool:
         notification = self.session.query(NotificationFilter).filter(NotificationFilter.id == _id).first()
@@ -33,15 +33,15 @@ class NotificationFilterRepository:
 
     def get_all(self) -> List[NotificationFilterOutput]:
         notifications = self.session.query().all()
-        return [NotificationFilterOutput(**notification) for notification in notifications]
+        return [NotificationFilterOutput(**notification.__dict__) for notification in notifications]
 
     def get_all_active(self) -> List[NotificationFilterOutput]:
         notifications = self.session.query(NotificationFilter).filter(NotificationFilter.active == True).all()
-        return [NotificationFilterOutput(**notification) for notification in notifications]
+        return [NotificationFilterOutput(**notification.__dict__) for notification in notifications]
 
     def get_all_by_user(self, user_id: UUID4) -> List[NotificationFilterOutput]:
         notifications = self.session.query(NotificationFilter).filter(NotificationFilter.user_id == user_id).all()
-        return [NotificationFilterOutput(**notification) for notification in notifications]
+        return [NotificationFilterOutput(**notification.__dict__) for notification in notifications]
 
     def delete(self, notification: Type[NotificationFilter]) -> bool:
         self.session.delete(notification)

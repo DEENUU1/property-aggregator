@@ -18,7 +18,7 @@ def region(test_get_db):
     return region
 
 
-def test_success_create_city_object(test_get_db, region):
+def test_success_create_city_object(test_get_db, region) -> None:
     repository = CityRepository(test_get_db)
     city = repository.create(CityInput(name="Uć", region_id=region.id))
 
@@ -26,7 +26,7 @@ def test_success_create_city_object(test_get_db, region):
     assert city.region_id == region.id
 
 
-def test_success_get_all_city_objects(test_get_db, region):
+def test_success_get_all_city_objects(test_get_db, region) -> None:
     repository = CityRepository(test_get_db)
     repository.create(CityInput(name="Uć", region_id=region.id))
     repository.create(CityInput(name="Łódź", region_id=region.id))
@@ -37,7 +37,7 @@ def test_success_get_all_city_objects(test_get_db, region):
     assert get_all[1].name == "Łódź"
 
 
-def test_success_get_all_city_objects_by_region(test_get_db, region):
+def test_success_get_all_city_objects_by_region(test_get_db, region) -> None:
     repository = CityRepository(test_get_db)
     repository.create(CityInput(name="Uć", region_id=region.id))
     repository.create(CityInput(name="Łódź", region_id=region.id))
@@ -48,7 +48,7 @@ def test_success_get_all_city_objects_by_region(test_get_db, region):
     assert get_all[1].name == "Łódź"
 
 
-def test_success_city_exists_by_name(test_get_db, region):
+def test_success_city_exists_by_name(test_get_db, region) -> None:
     repository = CityRepository(test_get_db)
     repository.create(CityInput(name="Uć", region_id=region.id))
 

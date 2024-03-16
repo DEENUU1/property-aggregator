@@ -53,7 +53,7 @@ def offer(test_get_db, city):
     return data
 
 
-def test_success_create_offer_scraper_object(test_get_db, offer, city):
+def test_success_create_offer_scraper_object(test_get_db, offer, city) -> None:
     repository = OfferRepository(test_get_db)
     offer = repository.create_scraper(offer, city.id)
     assert offer.title == "test offer"
@@ -72,13 +72,13 @@ def test_success_create_offer_scraper_object(test_get_db, offer, city):
     assert offer.photos[0].url == "https://google.com/img123"
 
 
-def test_success_offer_exists_by_url(test_get_db, offer, city):
+def test_success_offer_exists_by_url(test_get_db, offer, city) -> None:
     repository = OfferRepository(test_get_db)
     offer = repository.create_scraper(offer, city.id)
     assert repository.offer_exists_by_url(offer.details_url)
 
 
-def test_success_offer_exists_by_id(test_get_db, offer, city):
+def test_success_offer_exists_by_id(test_get_db, offer, city) -> None:
     repository = OfferRepository(test_get_db)
     offer = repository.create_scraper(offer, city.id)
     assert repository.offer_exists_by_id(offer.id)

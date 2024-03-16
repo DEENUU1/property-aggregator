@@ -25,24 +25,24 @@ def user(test_get_db):
     return user
 
 
-def test_success_create_user_object(test_get_db, user):
+def test_success_create_user_object(test_get_db, user) -> None:
     assert user.email == "test@example.com"
     assert user.username == "test_user"
     assert user.is_active
     assert user.is_superuser == False
 
 
-def test_success_user_exists_by_email(test_get_db, user):
+def test_success_user_exists_by_email(test_get_db, user) -> None:
     repository = UserRepository(test_get_db)
     assert repository.user_exists_by_email(user.email)
 
 
-def test_success_user_exists_by_username(test_get_db, user):
+def test_success_user_exists_by_username(test_get_db, user) -> None:
     repository = UserRepository(test_get_db)
     assert repository.user_exists_by_username(user.username)
 
 
-def test_success_get_user_by_email(test_get_db, user):
+def test_success_get_user_by_email(test_get_db, user) -> None:
     repository = UserRepository(test_get_db)
     user = repository.get_user_by_email(user.email)
     assert user.email == "test@example.com"
@@ -51,7 +51,7 @@ def test_success_get_user_by_email(test_get_db, user):
     assert user.is_superuser == False
 
 
-def test_success_get_user_by_username(test_get_db, user):
+def test_success_get_user_by_username(test_get_db, user) -> None:
     repository = UserRepository(test_get_db)
     user = repository.get_user_by_username(user.username)
     assert user.email == "test@example.com"

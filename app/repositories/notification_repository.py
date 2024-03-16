@@ -17,32 +17,27 @@ class NotificationRepository:
         self.session.add(new_notification)
         self.session.commit()
         self.session.refresh(new_notification)
-        return NotificationOutput(
-            **new_notification.__dict__,
-            id=new_notification.id,
-            created_at=new_notification.created_at,
-            read=new_notification.read,
-        )
+        return NotificationOutput(**new_notification.__dict__)
 
     def get_all_by_user_id(self, user_id: UUID4) -> List[NotificationOutput]:
         notifications = self.session.query(Notification).filter(Notification.user_id == user_id).all()
         return [
-            NotificationOutput(**notification.model_dump(exclude_none=True)) for notification in notifications
+            NotificationOutput(**notification.__dict__) for notification in notifications
         ]
 
     def get_by_id(self, _id: UUID4) -> NotificationOutput:
-        notification = self.session.query(Notification).filter(Notification.id == id).first()
+        notification = self.session.query(Notification).filter(Notification.id == _id).first()
         return NotificationOutput(**notification.model_dump(exclude_none=True))
 
     def notification_exists_by_id(self, _id: UUID4) -> bool:
-        notification = self.session.query(Notification).filter(Notification.id == id).first()
+        notification = self.session.query(Notification).filter(Notification.id == _id).first()
         if notification:
             return True
         else:
             return False
 
     def get_notification(self, _id: UUID4) -> Type[Notification]:
-        notification = self.session.query(Notification).filter(Notification.id == id).first()
+        notification = self.session.query(Notification).filter(Notification.id == _id).first()
         return notification
 
     def mark_as_read(self, notification: Type[Notification]) -> bool:
@@ -52,7 +47,7 @@ class NotificationRepository:
         return True
 
     def get_notification_by_id(self, _id: UUID4) -> NotificationOutput:
-        notification = self.session.query(Notification).filter(Notification.id == id).first()
+        notification = self.session.query(Notification).filter(Notification.id == _id).first()
         return NotificationOutput(**notification.model_dump(exclude_none=True))
 
     def update_offers(self, notification: Type[Notification], offers: List[Type[Offer]]) -> bool:

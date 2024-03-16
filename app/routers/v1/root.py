@@ -1,4 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from notification.tasks import create_notifications
+from config.database import get_db
 
 router = APIRouter(
     prefix="/health",
@@ -7,6 +11,9 @@ router = APIRouter(
 
 
 @router.get("", status_code=200)
-def health():
+def health(session: Session = Depends(get_db)):
     """ Check if the service is running correctly """
+
+    create_notifications(session)
+
     return {"status": "ok"}

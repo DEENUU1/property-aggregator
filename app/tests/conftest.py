@@ -15,7 +15,7 @@ engine = create_engine(
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def test_init_db():
+def test_init_db() -> None:
     offer.Offer.metadata.create_all(bind=engine)
     location.Region.metadata.create_all(bind=engine)
     location.City.metadata.create_all(bind=engine)

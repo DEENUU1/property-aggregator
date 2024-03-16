@@ -75,14 +75,14 @@ def offer(test_get_db, city):
     return offer
 
 
-def test_success_create_favourite_object(test_get_db, offer, user):
+def test_success_create_favourite_object(test_get_db, offer, user) -> None:
     repository = FavouriteRepository(test_get_db)
     favourite = repository.create(FavouriteInput(user_id=user.id, offer_id=offer.id))
     assert favourite.user_id == user.id
     assert favourite.offer_id == offer.id
 
 
-def test_get_all_by_user(test_get_db, offer, user):
+def test_get_all_by_user(test_get_db, offer, user) -> None:
     repository = FavouriteRepository(test_get_db)
     repository.create(FavouriteInput(user_id=user.id, offer_id=offer.id))
 

@@ -9,12 +9,14 @@ from .context import Context
 from .email_notification import EmailNotificationStrategy
 
 
-def create_notifications(db: Session = Depends(get_db)) -> None:
+def create_notifications(db: Session) -> None:
 
     notification_filters = NotificationFilterService(db).get_all_active()
+    print("Get all active notification filters")
 
     # Iterate through all active notification_filters objects
     for filter in notification_filters:
+        print("Iterate through all active notification_filters objects")
 
         # Get filtered offers
         offers = OfferService(db).get_all(
@@ -30,17 +32,21 @@ def create_notifications(db: Session = Depends(get_db)) -> None:
             floor=filter.floor,
             query=filter.query,
         )
+        print("Get filtered offers")
 
         notification_input = NotificationInput(
             user_id=filter.user_id,
             title=f"New offers for {filter.category}",
             message=f"There are {len(offers.offers)} offers for {filter.category}",
         )
+        print("Create notification object")
+
         notification_service = NotificationService(db)
         notification_object = notification_service.create(notification_input)
         notification_id = notification_object.id
 
         # Update notification object with offers
+        print("Update notification object with offers")
         offers_ids = [offer.id for offer in offers.offers]
         notification_service.update_offers(notification_id, offers_ids)
 

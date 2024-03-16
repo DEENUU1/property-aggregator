@@ -43,13 +43,11 @@ class NotificationService:
             HTTPException(status_code=404, detail="Notification not found")
 
         notification = self.repository.get_notification(notification_id)
-
         offers = []
         for _id in offers_id:
             if _id is not None:
                 offer = self.offer_repository.get_offer_by_id(_id)
                 offers.append(offer)
-
         return self.repository.update_offers(notification, offers)
 
     def get_unread_user_count(self, user_id: UUID4) -> int:

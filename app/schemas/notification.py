@@ -18,7 +18,7 @@ class NotificationBase(BaseModel):
     floor: Optional[bool] = None
     query: Optional[str] = None
     active: bool = True
-    user_id: UUID4
+    user_id: Optional[UUID4] = None
 
 
 class NotificationInput(NotificationBase):
@@ -27,3 +27,7 @@ class NotificationInput(NotificationBase):
 
 class NotificationOutput(NotificationBase):
     id: UUID4
+
+
+class NotificationUpdateStatus(NotificationBase):
+    status: bool

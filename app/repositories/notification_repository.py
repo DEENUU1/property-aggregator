@@ -1,3 +1,4 @@
+from models.offer import Offer
 from schemas.notification import NotificationOutput, NotificationInput
 from models.notification import Notification
 from sqlalchemy.orm import Session
@@ -31,12 +32,30 @@ class NotificationRepository:
         notification = self.session.query(Notification).filter(Notification.id == id).first()
         return NotificationOutput(**notification.model_dump(exclude_none=True))
 
+    def notification_exists_by_id(self, _id: UUID4) -> bool:
+        notification = self.session.query(Notification).filter(Notification.id == id).first()
+        if notification:
+            return True
+        else:
+            return False
+
     def get_notification(self, _id: UUID4) -> Type[Notification]:
         notification = self.session.query(Notification).filter(Notification.id == id).first()
         return notification
 
     def mark_as_read(self, notification: Type[Notification]) -> bool:
         notification.read = True
+        self.session.commit()
+        self.session.refresh(notification)
+        return True
+
+    def get_notification_by_id(self, _id: UUID4) -> NotificationOutput:
+        notification = self.session.query(Notification).filter(Notification.id == id).first()
+        return NotificationOutput(**notification.model_dump(exclude_none=True))
+
+    def update_offers(self, notification: Type[Notification], offers: List[Type[Offer]]) -> bool:
+        for offer in offers:
+            notification.offer.append(offer)
         self.session.commit()
         self.session.refresh(notification)
         return True

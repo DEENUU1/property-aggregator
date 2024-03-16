@@ -5,7 +5,7 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from models import offer, location, user, favourite, photo
+from models import offer, location, user, favourite, photo, notification, notification_filter
 
 
 engine = create_engine(
@@ -22,6 +22,8 @@ def test_init_db():
     photo.Photo.metadata.create_all(bind=engine)
     user.User.metadata.create_all(bind=engine)
     favourite.Favorite.metadata.create_all(bind=engine)
+    notification.Notification.metadata.create_all(bind=engine)
+    notification_filter.NotificationFilter.metadata.create_all(bind=engine)
 
 
 @pytest.fixture

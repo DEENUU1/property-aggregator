@@ -57,5 +57,5 @@ class Offer(Base):
     photos = relationship("Photo", back_populates="offer")
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
     favorited_by = relationship("Favorite", back_populates="offer")
+    notifications = relationship("Notification", back_populates="offer")

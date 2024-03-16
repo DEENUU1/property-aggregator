@@ -20,3 +20,4 @@ class User(Base):
 
     favorites = relationship("Favorite", back_populates="user")
     notifications_filters = relationship("NotificationFilter", back_populates="user")
+    notifications = relationship("Notification", back_populates="user")

@@ -1,10 +1,12 @@
 import uuid
 
-from sqlalchemy import String, Boolean, Column, Float, Integer, ForeignKey, relationship
+from sqlalchemy import String, Boolean, Column, Float, Integer, ForeignKey
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import UUID
 from config.database import Base
 from .offer import CategoryEnum, BuildingTypeEnum, SubCategoryEnum
+
+from sqlalchemy.orm import relationship
 
 
 class NotificationFilter(Base):
@@ -24,4 +26,4 @@ class NotificationFilter(Base):
     query = Column(String, nullable=True)
     active = Column(Boolean, default=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'))
-    notification = relationship("Notification", back_populates="filter")
+    user = relationship("User", back_populates="notifications_filters")

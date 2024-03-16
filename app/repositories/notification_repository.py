@@ -37,6 +37,9 @@ class NotificationRepository:
         notifications = self.session.query(Notification).filter(Notification.user_id == user_id).all()
         return [NotificationOutput(**notification) for notification in notifications]
 
-
+    def delete(self, notification: Type[Notification]) -> bool:
+        self.session.delete(notification)
+        self.session.commit()
+        return True
 
 

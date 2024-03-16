@@ -35,6 +35,10 @@ class NotificationFilterRepository:
         notifications = self.session.query().all()
         return [NotificationFilterOutput(**notification) for notification in notifications]
 
+    def get_all_active(self) -> List[NotificationFilterOutput]:
+        notifications = self.session.query(NotificationFilter).filter(NotificationFilter.active == True).all()
+        return [NotificationFilterOutput(**notification) for notification in notifications]
+
     def get_all_by_user(self, user_id: UUID4) -> List[NotificationFilterOutput]:
         notifications = self.session.query(NotificationFilter).filter(NotificationFilter.user_id == user_id).all()
         return [NotificationFilterOutput(**notification) for notification in notifications]

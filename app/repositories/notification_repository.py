@@ -1,9 +1,11 @@
+from typing import List, Type
+
+from pydantic import UUID4
+from sqlalchemy.orm import Session
+
+from models.notification import Notification
 from models.offer import Offer
 from schemas.notification import NotificationOutput, NotificationInput
-from models.notification import Notification
-from sqlalchemy.orm import Session
-from pydantic import UUID4
-from typing import List, Type
 
 
 class NotificationRepository:
@@ -59,3 +61,7 @@ class NotificationRepository:
         self.session.commit()
         self.session.refresh(notification)
         return True
+
+    def get_unread_user_count(self, user_id: UUID4) -> int:
+        return (self.session.query(Notification).filter(
+            Notification.user_id == user_id, Notification.read == False).count())

@@ -21,6 +21,9 @@ class NotificationFilterService:
     def get_all(self) -> List[NotificationFilterOutput]:
         return self.repository.get_all()
 
+    def get_all_active(self) -> List[NotificationFilterOutput]:
+        return self.repository.get_all_active()
+
     def get_all_by_user(self, user_id: UUID4)-> List[NotificationFilterOutput]:
         return self.repository.get_all_by_user(user_id)
 

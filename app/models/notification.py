@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import String, Boolean, Column, Float, Integer
+from sqlalchemy import String, Boolean, Column, Float, Integer, ForeignKey
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import UUID
 from config.database import Base
@@ -23,3 +23,4 @@ class Notification(Base):
     floor = Column(Integer, nullable=True)
     query = Column(String, nullable=True)
     active = Column(Boolean, default=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'))

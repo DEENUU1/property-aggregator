@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 from models.offer import CategoryEnum, BuildingTypeEnum, SubCategoryEnum
 
@@ -18,13 +18,12 @@ class NotificationBase(BaseModel):
     floor: Optional[bool] = None
     query: Optional[str] = None
     active: bool = True
+    user_id: UUID4
 
 
 class NotificationInput(NotificationBase):
+    pass
 
 
 class NotificationOutput(NotificationBase):
-
-
-class NotificationUpdateStatus(BaseModel):
-    active: Optional[bool] = None
+    id: UUID4

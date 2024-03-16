@@ -3,7 +3,7 @@ from typing import Type, List
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
-from models.notification import NotificationFilter
+from models.notification_filter import NotificationFilter
 from schemas.notification_filter import NotificationFilterInput, NotificationFilterOutput
 
 

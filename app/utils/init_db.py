@@ -4,7 +4,7 @@ from models.location import Region, City
 from models.offer import Offer
 from models.photo import Photo
 from models.user import User
-from models.notification import NotificationFilter
+from models.notification_filter import NotificationFilter
 
 
 def create_tables():

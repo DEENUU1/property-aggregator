@@ -4,7 +4,7 @@ from models.location import Region, City
 from models.offer import Offer
 from models.photo import Photo
 from models.user import User
-from models.notification import Notification
+from models.notification import NotificationFilter
 
 
 def create_tables():
@@ -15,5 +15,5 @@ def create_tables():
     City.metadata.create_all(bind=engine)
     User.metadata.create_all(bind=engine)
     Favorite.metadata.create_all(bind=engine)
-    Notification.metadata.create_all(bind=engine)
+    NotificationFilter.metadata.create_all(bind=engine)
 

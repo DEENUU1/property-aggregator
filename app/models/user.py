@@ -19,4 +19,4 @@ class User(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     favorites = relationship("Favorite", back_populates="user")
-    notifications = relationship("Notification", back_populates="user")
+    notifications_filters = relationship("NotificationFilter", back_populates="user")

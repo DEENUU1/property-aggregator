@@ -5,7 +5,7 @@ from pydantic import BaseModel, UUID4
 from models.offer import CategoryEnum, BuildingTypeEnum, SubCategoryEnum
 
 
-class NotificationBase(BaseModel):
+class NotificationFilterBase(BaseModel):
     category: Optional[CategoryEnum] = None
     sub_category: Optional[SubCategoryEnum] = None
     building_type: Optional[BuildingTypeEnum] = None
@@ -21,13 +21,13 @@ class NotificationBase(BaseModel):
     user_id: Optional[UUID4] = None
 
 
-class NotificationInput(NotificationBase):
+class NotificationFilterInput(NotificationFilterBase):
     pass
 
 
-class NotificationOutput(NotificationBase):
+class NotificationFilterOutput(NotificationFilterBase):
     id: UUID4
 
 
-class NotificationUpdateStatus(NotificationBase):
+class NotificationFilterUpdateStatus(NotificationFilterBase):
     status: bool

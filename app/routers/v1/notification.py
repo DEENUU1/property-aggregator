@@ -6,9 +6,10 @@ from sqlalchemy.orm import Session
 
 from auth.auth import get_current_user
 from config.database import get_db
-from schemas.notification import NotificationInput, NotificationOutput, NotificationUpdateStatus
+from schemas.notification_filter import NotificationFilterInput, NotificationFilterOutput, \
+    NotificationFilterUpdateStatus
 from schemas.user import UserInDB
-from services.notification_service import NotificationService
+from services.notificationfilter_service import NotificationFilterService
 
 router = APIRouter(
     prefix="/notification",
@@ -16,25 +17,25 @@ router = APIRouter(
 )
 
 
-@router.post("", status_code=201, response_model=NotificationOutput)
+@router.post("", status_code=201, response_model=NotificationFilterOutput)
 def create(
-        notification: NotificationInput,
+        notification: NotificationFilterInput,
         db: Session = Depends(get_db),
         current_user: UserInDB = Depends(get_current_user)
 ):
-    _service = NotificationService(db)
+    _service = NotificationFilterService(db)
     notification.user_id = current_user.id
     return _service.create(notification)
 
 
 @router.put("/{_id}", status_code=200)
 def update_status(
-        status: NotificationUpdateStatus,
+        status: NotificationFilterUpdateStatus,
         _id: UUID4,
         db: Session = Depends(get_db),
         current_user: UserInDB = Depends(get_current_user)
 ):
-    _service = NotificationService(db)
+    _service = NotificationFilterService(db)
     return _service.update_status(_id, status.status)
 
 
@@ -44,14 +45,14 @@ def delete(
         db: Session = Depends(get_db),
         current_user: UUID4 = Depends(get_current_user)
 ):
-    _service = NotificationService(db)
+    _service = NotificationFilterService(db)
     return _service.delete(_id)
 
 
-@router.get("", status_code=200, response_model=List[NotificationOutput])
+@router.get("", status_code=200, response_model=List[NotificationFilterOutput])
 def get_all_by_user(
         db: Session = Depends(get_db),
         current_user: UserInDB = Depends(get_current_user)
 ):
-    _service = NotificationService(db)
+    _service = NotificationFilterService(db)
     return _service.get_all_by_user(current_user.id)

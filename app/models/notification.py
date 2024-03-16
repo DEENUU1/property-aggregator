@@ -7,8 +7,8 @@ from config.database import Base
 from .offer import CategoryEnum, BuildingTypeEnum, SubCategoryEnum
 
 
-class Notification(Base):
-    __tablename__ = 'notifications'
+class NotificationFilter(Base):
+    __tablename__ = 'notifications_filters'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     category = Column(SQLAlchemyEnum(CategoryEnum), nullable=True)

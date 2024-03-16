@@ -10,7 +10,8 @@ class Notification(Base):
     __tablename__ = "notifications"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    message = Column(String, nullable=False)
+    title = Column(String, nullable=True)
+    message = Column(String, nullable=True)
     created_at = Column(DateTime, default=func.now())
     read = Column(Boolean, default=False)
 

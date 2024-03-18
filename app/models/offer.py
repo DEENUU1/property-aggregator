@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from config.database import Base
+from models.notification import notification_offer_association
 
 
 class CategoryEnum(str, Enum):
@@ -48,7 +49,7 @@ class Offer(Base):
     description = Column(String, nullable=True)
     price_per_m = Column(FLOAT, nullable=True)
     area = Column(FLOAT, nullable=True)
-    building_floot = Column(Integer, nullable=True)  # todo change this to floor typo
+    building_floot = Column(Integer, nullable=True)  # TODO change this to floor typo
     floor = Column(Integer, nullable=True)
     rooms = Column(Integer, nullable=True)
     furniture = Column(Boolean, nullable=True)
@@ -58,4 +59,8 @@ class Offer(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     favorited_by = relationship("Favorite", back_populates="offer")
-    notifications = relationship("Notification", back_populates="offer")
+    notifications = relationship(
+        "Notification",
+        secondary=notification_offer_association,
+        back_populates="offers"
+    )

@@ -16,5 +16,5 @@ class NotificationOutput(BaseModel):
     message: Optional[str] = None
     created_at: datetime
     read: bool = False
-    offer: List[Optional[Dict[str, Any]]] = []
+    offers: List[Dict[str, Any]] = None
     user_id: UUID4

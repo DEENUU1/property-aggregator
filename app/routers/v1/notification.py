@@ -13,10 +13,12 @@ from schemas.notification_filter import (
 )
 from schemas.user import UserInDB
 from services.notificationfilter_service import NotificationFilterService
+from services.notification_service import NotificationService
+from schemas.notification import NotificationInput, NotificationOutput
 
 router = APIRouter(
     prefix="/notification",
-    tags=["notif"]
+    tags=["notification"]
 )
 
 
@@ -59,3 +61,22 @@ def get_all_by_user(
 ):
     _service = NotificationFilterService(db)
     return _service.get_all_by_user(current_user.id)
+
+
+@router.get("", status_code=200, response_model=List[NotificationOutput])
+def get_notifications_by_user(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
+    _service = NotificationService(db)
+    return _service.get_all_by_user(current_user.id)
+
+
+@router.get("/{_id}", status_code=200, response_model=NotificationOutput)
+def get_notification_by_user(
+        _id: UUID4,
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
+    _service = NotificationService(db)
+    return _service.get_notification_by_id(_id)

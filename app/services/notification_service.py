@@ -1,5 +1,5 @@
-from typing import List, Optional
-
+from typing import List, Optional, Type
+from models.notification import Notification
 from fastapi import HTTPException
 from pydantic import UUID4
 from sqlalchemy.orm import Session
@@ -35,8 +35,29 @@ class NotificationService:
         notification = self.repository.get_notification(_id)
         self.repository.mark_as_read(notification)
 
-        notification = self.repository.get_by_id(_id)
-        return notification
+        offer_list = []
+        if notification.offers:
+            for offer in notification.offers:
+                offer_details = self.offer_repository.get_details(offer.id)
+                offer_list.append(offer_details)
+
+        result = NotificationOutput(
+            id=notification.id,
+            title=notification.title,
+            message=notification.message,
+            created_at=notification.created_at,
+            read=notification.read,
+            offers=offer_list,
+            user_id=notification.user_id,
+        )
+
+        return result
+
+    def get_notification(self, _id: UUID4) -> Type[Notification]:
+        if not self.repository.notification_exists_by_id(_id):
+            HTTPException(status_code=404, detail="Notification not found")
+
+        return self.repository.get_notification(_id)
 
     def update_offers(self, notification_id: UUID4, offers_id: List[Optional[UUID4]]) -> bool:
         if not self.repository.notification_exists_by_id(notification_id):

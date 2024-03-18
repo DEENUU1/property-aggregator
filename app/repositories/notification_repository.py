@@ -27,7 +27,7 @@ class NotificationRepository:
 
     def get_by_id(self, _id: UUID4) -> NotificationOutput:
         notification = self.session.query(Notification).filter(Notification.id == _id).first()
-        return NotificationOutput(**notification.model_dump(exclude_none=True))
+        return NotificationOutput(**notification.__dict__)
 
     def notification_exists_by_id(self, _id: UUID4) -> bool:
         notification = self.session.query(Notification).filter(Notification.id == _id).first()
@@ -52,9 +52,11 @@ class NotificationRepository:
 
     def update_offers(self, notification: Type[Notification], offers: List[Type[Offer]]) -> bool:
         for offer in offers:
-            notification.offer.append(offer)
+            if offer not in notification.offers:
+                notification.offers.append(offer)
         self.session.commit()
-        self.session.refresh(notification)
+
+        print(notification.offers)
         return True
 
     def get_unread_user_count(self, user_id: UUID4) -> int:

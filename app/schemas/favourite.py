@@ -5,7 +5,7 @@ from pydantic import BaseModel, UUID4
 
 class FavouriteInput(BaseModel):
     offer_id: UUID4
-    # user_id is set to None and it's defined as Optional
+    # user_id is set to None, and it's defined as Optional
     # because user_id is assigned on the app site not from client
     user_id: Optional[UUID4] = None
 
@@ -20,8 +20,10 @@ class FavouriteInDb(BaseModel):
 
 
 class FavouriteOutput(BaseModel):
+    id: UUID4
     offer_id: UUID4
 
 
-class FavouriteListOutput(BaseModel):
-    offers: List[Dict[str, Any]]
+class FavouriteOfferOutput(BaseModel):
+    id: UUID4
+    offer: Dict[str, Any]

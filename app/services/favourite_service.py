@@ -1,8 +1,10 @@
+from typing import List
+
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from repositories.favourite_repository import FavouriteRepository
-from schemas.favourite import FavouriteInput, FavouriteListOutput, FavouriteInDb
+from schemas.favourite import FavouriteInput, FavouriteOfferOutput
 from repositories.offer_repository import OfferRepository
 
 
@@ -25,14 +27,18 @@ class FavouriteService:
     def delete(self, _id: UUID4) -> bool:
         if not self.repository.favourite_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="Favourite not found")
-        return self.repository.delete(_id)
 
-    def get_all_by_user(self, user_id: UUID4) -> FavouriteListOutput:
+        favourite = self.repository.get_favourite(_id)
+
+        return self.repository.delete(favourite)
+
+    def get_all_by_user(self, user_id: UUID4) -> List[FavouriteOfferOutput]:
         favourites = self.repository.get_all_by_user(user_id)
 
         results = []
         for favourite in favourites:
             result = self.repository_offer.get_details(favourite.offer_id)
-            results.append(result)
+            favourite_offer = FavouriteOfferOutput(id=favourite.id, offer=result)
+            results.append(favourite_offer)
 
-        return FavouriteListOutput(offers=results)
+        return results

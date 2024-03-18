@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
+from typing import List
 from config.database import get_db
-from schemas.favourite import FavouriteInput, FavouriteListOutput
+from schemas.favourite import FavouriteInput, FavouriteOfferOutput
 from services.favourite_service import FavouriteService
 from schemas.user import UserInDB
 from auth.auth import get_current_user
+from pydantic import UUID4
+
 
 router = APIRouter(
     prefix="/favourite",
@@ -26,7 +28,7 @@ def create(
 
 @router.delete("/{_id}", status_code=204)
 def delete(
-        _id: int,
+        _id: UUID4,
         session: Session = Depends(get_db),
         current_user: UserInDB = Depends(get_current_user),
 ):
@@ -34,7 +36,7 @@ def delete(
     return _service
 
 
-@router.get("", status_code=200, response_model=FavouriteListOutput)
+@router.get("", status_code=200, response_model=List[FavouriteOfferOutput])
 def get_all_by_user(
         session: Session = Depends(get_db),
         current_user: UserInDB = Depends(get_current_user),

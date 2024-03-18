@@ -18,14 +18,14 @@ class OfferStatisticRepository:
         result = [{'month_year': row[0], 'count': row[1]} for row in offer_counts]
         return result
 
-    def count_offers_by_category(self):
+    def count_offers_by_category(self) -> Dict[str, int]:
         category_counts = defaultdict(int)
         offers = self.session.query(Offer).all()
         for offer in offers:
             category_counts[offer.category.value] += 1
         return category_counts
 
-    def count_offers_by_subcategory(self):
+    def count_offers_by_subcategory(self) -> Dict[str, int]:
         subcategory_counts = defaultdict(int)
         offers = self.session.query(Offer).all()
         for offer in offers:

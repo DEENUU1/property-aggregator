@@ -14,12 +14,12 @@ app = FastAPI(
 
 if settings.DEBUG:
     origins = ["*"]
-    app_configs = {"openapi_url": None}
-    app = FastAPI(**app_configs)
 else:
     origins = [
         str(origin).strip(",") for origin in settings.ORIGINS
     ]
+    app_configs = {"openapi_url": None}
+    app = FastAPI(**app_configs)
 
 app.add_middleware(
     CORSMiddleware,

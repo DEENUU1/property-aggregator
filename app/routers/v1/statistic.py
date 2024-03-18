@@ -14,3 +14,12 @@ router = APIRouter(
 def get_offer_timeline(db: Session = Depends(get_db)):
     return OfferStatisticRepository(db).get_number_of_offers_by_month()
 
+
+@router.get("offer/category")
+def get_offer_count_by_category(db: Session = Depends(get_db)):
+    return OfferStatisticRepository(db).count_offers_by_category()
+
+
+@router.get("offer/subcategory")
+def get_offer_count_by_subcategory(db: Session = Depends(get_db)):
+    return OfferStatisticRepository(db).count_offers_by_subcategory()

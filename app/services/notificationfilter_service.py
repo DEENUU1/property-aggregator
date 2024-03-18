@@ -16,7 +16,9 @@ class NotificationFilterService:
     def update_status(self, _id: UUID4, status: bool) -> bool:
         if not self.repository.notification_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="Notification filter does not exist")
-        return self.repository.update_status(_id, status)
+
+        notification = self.repository.get_notification_by_id(_id)
+        return self.repository.update_status(notification, status)
 
     def get_all(self) -> List[NotificationFilterOutput]:
         return self.repository.get_all()

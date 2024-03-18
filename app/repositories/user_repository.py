@@ -4,19 +4,19 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from models.user import User
-from schemas.user import UserIn
+from schemas.user import UserIn, UserInDBBase
 
 
 class UserRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, data: UserIn, hashed_password: str):
+    def create(self, data: UserIn, hashed_password: str) -> UserInDBBase:
         db_user = User(**data.model_dump(exclude={"password"}), hashed_password=hashed_password)
         self.session.add(db_user)
         self.session.commit()
         self.session.refresh(db_user)
-        return db_user
+        return UserInDBBase(**db_user.__dict__)
 
     def user_exists_by_email(self, email: str) -> bool:
         return self.session.query(User).filter(User.email == email).first() is not None

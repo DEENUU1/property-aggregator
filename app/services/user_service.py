@@ -9,7 +9,7 @@ from auth.security import get_password_hash
 from auth.security import pwd_context, create_access_token
 from config.settings import settings
 from repositories.user_repository import UserRepository
-from schemas.user import UserIn
+from schemas.user import UserIn, UserInDBBase
 
 
 class UserService:
@@ -17,7 +17,7 @@ class UserService:
     def __init__(self, session: Session):
         self.repository = UserRepository(session)
 
-    def create(self, data: UserIn):
+    def create(self, data: UserIn) -> UserInDBBase:
         if self.repository.user_exists_by_email(data.email):
             raise HTTPException(status_code=400, detail="Username already registered")
         if self.repository.user_exists_by_username(data.username):

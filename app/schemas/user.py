@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional
 
 
@@ -14,7 +14,7 @@ class UserIn(UserBase):
 
 
 class UserInDBBase(UserBase):
-    id: int
+    id: UUID4
 
     class Config:
         orm_mode = True

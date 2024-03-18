@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from auth.security import get_password_hash
@@ -37,3 +38,10 @@ class UserService:
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
         return {"access_token": access_token, "token_type": "bearer"}
+
+    def is_superuser(self, _id: UUID4) -> bool:
+        if not self.repository.user_exists_by_id(_id):
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user = self.repository.get_user_object_by_id(_id)
+        return user.is_superuser

@@ -31,7 +31,7 @@ def get_regions(session: Session = Depends(get_db)):
     return _service.get_all()
 
 
-@router.delete("/{id}", status_code=204)
+@router.delete("/{_id}", status_code=204)
 def delete_region(
         _id: UUID4,
         session: Session = Depends(get_db),
@@ -41,7 +41,7 @@ def delete_region(
     return _service.delete(_id, current_user.id)
 
 
-@router.put("/{id}", status_code=200, response_model=RegionInput)
+@router.put("/{_id}", status_code=200, response_model=RegionInput)
 def update_region(
         _id: UUID4,
         data: RegionInput,

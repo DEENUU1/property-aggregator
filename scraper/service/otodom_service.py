@@ -11,6 +11,15 @@ class OtodomService:
         """Initialize the Otodom service with an Otodom repository."""
         self.repository = OtodomRepository(get_collection("otodom"))
 
+    def delete_all_parsed(self) -> None:
+        """
+        Delete all parsed Otodom data.
+
+        Returns:
+        - None
+        """
+        return self.repository.delete_all_parsed()
+
     def create(self, data: Otodom):
         """
         Create a new Otodom data entry.

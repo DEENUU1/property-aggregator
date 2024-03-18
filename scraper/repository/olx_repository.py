@@ -34,6 +34,13 @@ class OlxRepository:
         """
         return self.collection.find({"parsed": False})
 
+    def delete_all_parsed(self) -> None:
+        """
+        Delete all parsed OLX data from the collection.
+        :return:
+        """
+        return self.collection.delete_many({"parsed": True})
+
     def get_by_id(self, _id: str) -> Olx:
         """
         Retrieve OLX data from the collection by its ID.

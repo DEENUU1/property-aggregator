@@ -2,8 +2,21 @@ import typer
 
 from data.site import Site
 from tasks import run_parser, run_scraper
+from service import otodom_service, olx_service
 
 app = typer.Typer()
+
+
+@app.command()
+def delete_parsed_olx() -> None:
+    service = olx_service.OlxService()
+    service.delete_all_parsed()
+
+
+@app.command()
+def delete_parsed_otodom() -> None:
+    service = otodom_service.OtodomService()
+    service.delete_all_parsed()
 
 
 @app.command()

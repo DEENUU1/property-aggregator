@@ -11,6 +11,15 @@ class OlxService:
         """Initialize the OLX service with an OLX repository."""
         self.repository = OlxRepository(get_collection("olx"))
 
+    def delete_all_parsed(self):
+        """
+        Delete all parsed OLX data.
+
+        Returns:
+        - None
+        """
+        return self.repository.delete_all_parsed()
+
     def create(self, data: Olx):
         """
         Create a new OLX data entry.

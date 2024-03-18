@@ -15,6 +15,13 @@ class OtodomRepository:
         """
         self.collection = collection
 
+    def delete_all_parsed(self) -> None:
+        """
+        Return all parsed Otodom data from the collection.
+        :return:
+        """
+        return self.collection.delete_many({"parsed": True})
+
     def create(self, data: Otodom) -> None:
         """
         Insert a new Otodom data into the database collection.

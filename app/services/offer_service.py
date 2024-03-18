@@ -1,3 +1,5 @@
+from typing import Dict, Any
+
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
@@ -7,8 +9,10 @@ from repositories.city_repository import CityRepository
 from repositories.offer_repository import OfferRepository
 from repositories.region_repository import RegionRepository
 from schemas.location import RegionInput, CityInput
-from schemas.offer import OfferInput, OfferOutput, OfferScraper, OfferList
+from schemas.offer import OfferOutput, OfferScraper, OfferList
 from enums.offer_sort import OfferSortEnum
+from schemas.user import UserIn
+from services.user_service import UserService
 
 
 class OfferService:
@@ -17,6 +21,7 @@ class OfferService:
         self.repository = OfferRepository(session)
         self.region_repository = RegionRepository(session)
         self.city_repository = CityRepository(session)
+        self.user_service = UserService(session)
 
     def create(self, offer: OfferScraper) -> Offer:
         if self.repository.offer_exists_by_url(offer.details_url):
@@ -33,7 +38,10 @@ class OfferService:
         offer_obj = self.repository.create(offer, city.id)
         return offer_obj
 
-    def delete(self, _id: int) -> bool:
+    def delete(self, _id: int, user_id: UUID4) -> bool:
+        if not self.user_service.is_superuser(user_id):
+            raise HTTPException(status_code=403, detail="Forbidden")
+
         if not self.repository.offer_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="Offer not found")
         offer = self.repository.get_offer_by_id(_id)
@@ -74,7 +82,7 @@ class OfferService:
             sort_by
         )
 
-    def get_by_id(self, _id: UUID4) -> OfferOutput:
+    def get_by_id(self, _id: UUID4) -> Dict[str, Any]:
         if not self.repository.offer_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="Offer not found")
         return self.repository.get_details(_id)

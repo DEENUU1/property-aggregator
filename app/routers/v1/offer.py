@@ -3,9 +3,12 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from config.database import get_db
-from schemas.offer import OfferInput, OfferScraper
+from schemas.offer import OfferScraper
 from services.offer_service import OfferService
 from enums.offer_sort import OfferSortEnum
+from schemas.user import UserIn
+from auth.auth import get_current_user
+
 
 router = APIRouter(
     prefix="/offer",
@@ -20,8 +23,12 @@ def create(offer: OfferScraper, session: Session = Depends(get_db)):
 
 
 @router.delete("/{_id}", status_code=204)
-def delete(_id: UUID4, session: Session = Depends(get_db)):
-    _service = OfferService(session).delete(_id)
+def delete(
+        _id: UUID4,
+        session: Session = Depends(get_db),
+        current_user: UserIn = Depends(get_current_user)
+):
+    _service = OfferService(session).delete(_id, current_user.id)
     return _service
 
 

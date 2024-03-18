@@ -1,10 +1,10 @@
 from typing import Type
 
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from models.user import User
 from schemas.user import UserIn
-from pydantic import UUID4
 
 
 class UserRepository:
@@ -35,3 +35,8 @@ class UserRepository:
 
     def user_exists_by_id(self, _id: UUID4) -> bool:
         return self.session.query(User).filter(User.id == _id).first() is not None
+
+    def delete_user(self, user: Type[User]) -> bool:
+        self.session.delete(user)
+        self.session.commit()
+        return True

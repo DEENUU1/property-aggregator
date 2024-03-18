@@ -45,3 +45,11 @@ class UserService:
 
         user = self.repository.get_user_object_by_id(_id)
         return user.is_superuser
+
+    def delete_user(self, _id: UUID4) -> bool:
+        if not self.repository.user_exists_by_id(_id):
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user = self.repository.get_user_object_by_id(_id)
+        self.repository.delete_user(user)
+        return True

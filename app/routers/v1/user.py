@@ -26,5 +26,14 @@ def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depend
 
 
 @router.get("/me", status_code=200)
-def me(user: UserIn = Depends(get_current_user)):
+def get_me(user: UserIn = Depends(get_current_user)):
     return user
+
+
+@router.delete("/me", status_code=204)
+def delete_me(
+        user: UserIn = Depends(get_current_user),
+        session: Session = Depends(get_db)
+):
+    _service = UserService(session)
+    return _service.delete_user(user.id)

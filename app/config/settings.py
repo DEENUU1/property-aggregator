@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     # Title is the name of application
     TITLE: Optional[str] = os.getenv("TITLE")
     # SQLITE connection string
-    SQLITE_CONNECTION_STRING: Optional[str] = "sqlite:///database.db" #os.getenv("SQLITE_CONNECTION_STRING")
+    SQLITE_CONNECTION_STRING: Optional[str] = "sqlite:///database.db"  # os.getenv("SQLITE_CONNECTION_STRING")
     # JWT
     SECRET_KEY: Optional[str] = os.getenv("SECRET_KEY")
     ALGORITHM: Optional[str] = os.getenv("ALGORITHM")

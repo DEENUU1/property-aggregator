@@ -15,6 +15,15 @@ class CityInput(BaseModel):
     region_id: UUID4
 
 
+class CityInDb(BaseModel):
+    id: UUID4
+    name: str
+    region_id: UUID4
+
+    class Config:
+        orm_mode = True
+
+
 class CityOutput(BaseModel):
     id: UUID4
     name: str

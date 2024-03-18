@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.post("", status_code=201, response_model=CityInput)
+@router.post("", status_code=201, response_model=CityOutput)
 def create_city(data: CityInput, session: Session = Depends(get_db)):
     _service = CityService(session)
     return _service.create(data)

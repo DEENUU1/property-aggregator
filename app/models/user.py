@@ -17,7 +17,6 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
     favorites = relationship("Favorite", back_populates="user")
     notifications_filters = relationship("NotificationFilter", back_populates="user")
     notifications = relationship("Notification", back_populates="user")

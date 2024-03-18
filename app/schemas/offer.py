@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from pydantic import BaseModel, UUID4
 
@@ -13,16 +13,16 @@ class OfferInput(BaseModel):
     details_url: str
     category: CategoryEnum
     sub_category: SubCategoryEnum
-    building_type: BuildingTypeEnum | None
-    price: float | None
-    rent: float | None
-    description: str | None
-    price_per_m: float | None
-    area: float | None
-    building_floot: int | None
-    floor: int | None
-    rooms: int | None
-    furniture: bool | None
+    building_type: Optional[BuildingTypeEnum] = None
+    price: Optional[float] = None
+    rent: Optional[float] = None
+    description: Optional[str] = None
+    price_per_m: Optional[float] = None
+    area: Optional[float] = None
+    building_floot: Optional[int] = None
+    floor: Optional[int] = None
+    rooms: Optional[int] = None
+    furniture: Optional[bool] = None
     photos: List[PhotoInput]
     city_id: UUID4
 
@@ -32,16 +32,16 @@ class OfferScraper(BaseModel):
     details_url: str
     category: CategoryEnum
     sub_category: SubCategoryEnum
-    building_type: BuildingTypeEnum | None
-    price: float | None
-    rent: float | None
-    description: str | None
-    price_per_m: float | None
-    area: float | None
-    building_floot: int | None
-    floor: int | None
-    rooms: int | None
-    furniture: bool | None
+    building_type: Optional[BuildingTypeEnum] = None
+    price: Optional[float] = None
+    rent: Optional[float] = None
+    description: Optional[str] = None
+    price_per_m: Optional[float] = None
+    area: Optional[float] = None
+    building_floot: Optional[int] = None
+    floor: Optional[int] = None
+    rooms: Optional[int] = None
+    furniture: Optional[bool] = None
     photos: List[PhotoInput]
     region_name: str
     city_name: str
@@ -54,15 +54,15 @@ class OfferOutput(BaseModel):
     category: CategoryEnum
     sub_category: SubCategoryEnum
     building_type: BuildingTypeEnum | None
-    price: float | None
-    rent: float | None
-    description: str | None
-    price_per_m: float | None
-    area: float | None
-    building_floot: int | None
-    floor: int | None
-    rooms: int | None
-    furniture: bool | None
+    price: Optional[float] = None
+    rent: Optional[float] = None
+    description: Optional[str] = None
+    price_per_m: Optional[float] = None
+    area: Optional[float] = None
+    building_floot: Optional[int] = None
+    floor: Optional[int] = None
+    rooms: Optional[int] = None
+    furniture: Optional[bool] = None
     photos: List[PhotoInput]
     city: CityOutput
     created_at: datetime

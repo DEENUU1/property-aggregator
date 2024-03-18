@@ -20,9 +20,8 @@ class Notification(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String, nullable=True)
     message = Column(String, nullable=True)
-    created_at = Column(DateTime, default=func.now())
     read = Column(Boolean, default=False)
-
+    created_at = Column(DateTime, default=func.now())
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'))
     user = relationship("User", back_populates="notifications")
     offers = relationship("Offer", secondary=notification_offer_association, back_populates="notifications")

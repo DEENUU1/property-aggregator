@@ -13,6 +13,5 @@ class Favorite(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     offer_id = Column(UUID(as_uuid=True), ForeignKey("offers.id"))
 
-    # Define relationships
     user = relationship("User", back_populates="favorites")
     offer = relationship("Offer", back_populates="favorited_by")

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from notification.tasks import create_notifications
+from tasks.celery_worker import create_notifications
 from config.database import get_db
 
 router = APIRouter(

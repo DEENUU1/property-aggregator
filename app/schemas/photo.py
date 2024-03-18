@@ -1,12 +1,6 @@
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel
 
 
 class PhotoInput(BaseModel):
     url: str
-
-
-class PhotoOutput(BaseModel):
-    id: UUID4
-    url: str
-    offer_id: UUID4
 

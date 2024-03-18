@@ -22,6 +22,10 @@ class RegionRepository:
         regions = self.session.query(Region).all()
         return [RegionOutput(**region.__dict__) for region in regions]
 
+    def get_region(self, _id: UUID4) -> RegionOutput:
+        region = self.session.query(Region).filter_by(id=_id).first()
+        return RegionOutput(**region.__dict__)
+
     def get_by_id(self, _id: UUID4) -> Type[Region]:
         return self.session.query(Region).filter_by(id=_id).first()
 

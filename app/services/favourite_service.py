@@ -13,7 +13,11 @@ class FavouriteService:
         self.repository_offer = OfferRepository(session)
 
     def create(self, data: FavouriteInput) -> FavouriteInput:
-        return self.repository.create(data)
+        if self.repository.offer_saved_by_user(data.user_id, data.offer_id):
+            raise HTTPException(status_code=400, detail="Offer already saved")
+
+        favourite = self.repository.create(data)
+        return FavouriteInput(**favourite.__dict__)
 
     def delete(self, _id: UUID4) -> bool:
         if not self.repository.favourite_exists_by_id(_id):

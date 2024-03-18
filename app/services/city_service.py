@@ -6,17 +6,23 @@ from sqlalchemy.orm import Session
 
 from repositories.city_repository import CityRepository
 from schemas.location import CityInput, CityOutput
+from repositories.region_repository import RegionRepository
 
 
 class CityService:
 
     def __init__(self, session: Session):
         self.repository = CityRepository(session)
+        self.region_repository = RegionRepository(session)
 
-    def create(self, data: CityInput) -> CityInput:
+    def create(self, data: CityInput) -> CityOutput:
         if self.repository.city_exists_by_name(data.name):
             raise HTTPException(status_code=400, detail="City already exists")
-        return self.repository.create(data)
+
+        region = self.region_repository.get_region(data.region_id)
+        city = self.repository.create(data)
+
+        return CityOutput(**city.model_dump(exclude_none=True), region=region)
 
     def get_all_by_region(self, region_id: UUID4) -> List[CityOutput]:
         return self.repository.get_all_by_region(region_id)

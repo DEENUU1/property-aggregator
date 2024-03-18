@@ -4,7 +4,7 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from models.location import City
-from schemas.location import CityInput, CityOutput, RegionOutput
+from schemas.location import CityInput, CityOutput, RegionOutput, CityInDb
 
 
 class CityRepository:
@@ -12,12 +12,12 @@ class CityRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, data: CityInput) -> CityInput:
+    def create(self, data: CityInput) -> CityInDb:
         city = City(**data.model_dump(exclude_none=True))
         self.session.add(city)
         self.session.commit()
         self.session.refresh(city)
-        return CityInput(**city.__dict__)
+        return CityInDb(**city.__dict__)
 
     def get_all(self) -> List[Optional[CityOutput]]:
         cities = self.session.query(City).all()

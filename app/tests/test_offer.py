@@ -15,6 +15,7 @@ from schemas.photo import PhotoInput
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+
 @pytest.fixture()
 def region(test_get_db):
     repository = RegionRepository(test_get_db)
@@ -55,7 +56,7 @@ def offer(test_get_db, city):
 
 def test_success_create_offer_scraper_object(test_get_db, offer, city) -> None:
     repository = OfferRepository(test_get_db)
-    offer = repository.create_scraper(offer, city.id)
+    offer = repository.create(offer, city.id)
     assert offer.title == "test offer"
     assert offer.details_url == "https://google.com"
     assert offer.category == CategoryEnum.POKOJ
@@ -74,11 +75,11 @@ def test_success_create_offer_scraper_object(test_get_db, offer, city) -> None:
 
 def test_success_offer_exists_by_url(test_get_db, offer, city) -> None:
     repository = OfferRepository(test_get_db)
-    offer = repository.create_scraper(offer, city.id)
+    offer = repository.create(offer, city.id)
     assert repository.offer_exists_by_url(offer.details_url)
 
 
 def test_success_offer_exists_by_id(test_get_db, offer, city) -> None:
     repository = OfferRepository(test_get_db)
-    offer = repository.create_scraper(offer, city.id)
+    offer = repository.create(offer, city.id)
     assert repository.offer_exists_by_id(offer.id)

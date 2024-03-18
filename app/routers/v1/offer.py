@@ -13,15 +13,9 @@ router = APIRouter(
 )
 
 
-@router.post("", status_code=201, response_model=OfferInput)
-def create(offers: OfferInput, session: Session = Depends(get_db)):
-    _service = OfferService(session).create(offers)
-    return _service
-
-
-@router.post("/scraper", status_code=201)
-def create_scraper(offer: OfferScraper, session: Session = Depends(get_db)):
-    _service = OfferService(session).create_scraper(offer)
+@router.post("", status_code=201)
+def create(offer: OfferScraper, session: Session = Depends(get_db)):
+    _service = OfferService(session).create(offer)
     return _service
 
 

@@ -15,21 +15,7 @@ class OfferRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, data: OfferInput) -> Offer:
-        db_offer = Offer(**data.model_dump(exclude_none=True, exclude={"photos"}))
-        self.session.add(db_offer)
-        self.session.commit()
-        self.session.refresh(db_offer)
-
-        for photo in data.photos:
-            db_photo = Photo(url=photo.url, offer_id=db_offer.id)
-            self.session.add(db_photo)
-            self.session.commit()
-            self.session.refresh(db_photo)
-
-        return db_offer
-
-    def create_scraper(self, data: OfferScraper, city_id: str) -> Offer:
+    def create(self, data: OfferScraper, city_id: str) -> Offer:
         db_offer = Offer(**data.model_dump(exclude_none=True, exclude={"photos", "region_name", "city_name"}))
         db_offer.city_id = city_id
         self.session.add(db_offer)

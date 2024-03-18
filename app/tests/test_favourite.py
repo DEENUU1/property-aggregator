@@ -71,7 +71,7 @@ def offer(test_get_db, city):
     )
 
     repository = OfferRepository(test_get_db)
-    offer = repository.create_scraper(data, city.id)
+    offer = repository.create(data, city.id)
     return offer
 
 

@@ -2,7 +2,7 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from repositories.favourite_repository import FavouriteRepository
-from schemas.favourite import FavouriteInput, FavouriteListOutput
+from schemas.favourite import FavouriteInput, FavouriteListOutput, FavouriteInDb
 from repositories.offer_repository import OfferRepository
 
 

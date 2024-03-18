@@ -18,13 +18,7 @@ class OfferService:
         self.region_repository = RegionRepository(session)
         self.city_repository = CityRepository(session)
 
-    def create(self, offer: OfferInput) -> Offer:
-        if self.repository.offer_exists_by_url(offer.details_url):
-            raise HTTPException(status_code=400, detail="Offer already exists")
-        offer_obj = self.repository.create(offer)
-        return offer_obj
-
-    def create_scraper(self, offer: OfferScraper) -> Offer:
+    def create(self, offer: OfferScraper) -> Offer:
         if self.repository.offer_exists_by_url(offer.details_url):
             raise HTTPException(status_code=400, detail="Offer already exists")
 
@@ -36,7 +30,7 @@ class OfferService:
             self.city_repository.create(CityInput(name=offer.city_name, region_id=region.id))
         city = self.city_repository.get_by_name(offer.city_name)
 
-        offer_obj = self.repository.create_scraper(offer, city.id)
+        offer_obj = self.repository.create(offer, city.id)
         return offer_obj
 
     def delete(self, _id: int) -> bool:

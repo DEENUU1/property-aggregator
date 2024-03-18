@@ -1,8 +1,8 @@
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, UUID4, Field
 
 
 class RegionInput(BaseModel):
-    name: str
+    name: str = Field(min_length=1, max_length=120)
 
 
 class RegionOutput(BaseModel):
@@ -11,7 +11,7 @@ class RegionOutput(BaseModel):
 
 
 class CityInput(BaseModel):
-    name: str
+    name: str = Field(min_length=1, max_length=120)
     region_id: UUID4
 
 

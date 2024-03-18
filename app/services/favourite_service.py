@@ -16,6 +16,9 @@ class FavouriteService:
         if self.repository.offer_saved_by_user(data.user_id, data.offer_id):
             raise HTTPException(status_code=400, detail="Offer already saved")
 
+        if not self.repository_offer.offer_exists_by_id(data.offer_id):
+            raise HTTPException(status_code=404, detail="Offer not found")
+
         favourite = self.repository.create(data)
         return FavouriteInput(**favourite.__dict__)
 

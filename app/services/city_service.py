@@ -19,6 +19,9 @@ class CityService:
         if self.repository.city_exists_by_name(data.name):
             raise HTTPException(status_code=400, detail="City already exists")
 
+        if not self.region_repository.region_exists_by_id(data.region_id):
+            raise HTTPException(status_code=400, detail="Region not found")
+
         region = self.region_repository.get_region(data.region_id)
         city = self.repository.create(data)
 

@@ -32,7 +32,7 @@ def delete(
         session: Session = Depends(get_db),
         current_user: UserInDB = Depends(get_current_user),
 ):
-    _service = FavouriteService(session).delete(_id)
+    _service = FavouriteService(session).delete(_id, current_user.id)
     return _service
 
 

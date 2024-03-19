@@ -5,12 +5,16 @@ from config.settings import settings
 from routers.api import router
 from utils.init_db import create_tables
 
-create_tables()
-
 app = FastAPI(
     debug=bool(settings.DEBUG),
     title=settings.TITLE,
 )
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    create_tables()
+
 
 if settings.DEBUG:
     origins = ["*"]

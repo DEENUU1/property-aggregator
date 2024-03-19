@@ -41,7 +41,7 @@ def update_status(
         current_user: UserInDB = Depends(get_current_user)
 ):
     _service = NotificationFilterService(db)
-    return _service.update_status(_id, status.status)
+    return _service.update_status(_id, status.status, current_user.id)
 
 
 @router.delete("/filter/{_id}", status_code=204)
@@ -51,7 +51,7 @@ def delete(
         current_user: UUID4 = Depends(get_current_user)
 ):
     _service = NotificationFilterService(db)
-    return _service.delete(_id)
+    return _service.delete(_id, current_user.id)
 
 
 @router.get("/filter", status_code=200, response_model=List[NotificationFilterOutput])
@@ -79,4 +79,13 @@ def get_notification_by_user(
         current_user: UserInDB = Depends(get_current_user)
 ):
     _service = NotificationService(db)
-    return _service.get_notification_by_id(_id)
+    return _service.get_notification_by_id(_id, current_user.id)
+
+
+@router.get("/unread", status_code=200)
+def get_unread_user_count(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
+    _service = NotificationService(db)
+    return _service.get_unread_user_count(current_user.id)

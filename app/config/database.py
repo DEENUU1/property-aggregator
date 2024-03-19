@@ -3,7 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from .settings import settings
 
-SQLALCHEMY_DATABASE_URL = settings.SQLITE_CONNECTION_STRING
+if settings.DEBUG:
+    SQLALCHEMY_DATABASE_URL = settings.SQLITE_CONNECTION_STRING
+else:
+    SQLALCHEMY_DATABASE_URL = settings.POSTGRES_CONNECTION_STRING
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

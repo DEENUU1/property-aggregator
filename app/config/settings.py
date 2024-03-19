@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     # Redis & Celery
     BROKER: Optional[str] = os.getenv("BROKER")
     BACKEND: Optional[str] = os.getenv("BACKEND")
+    # PostgreSQL connection string
+    POSTGRESS_USER: Optional[str] = os.getenv("POSTGRES_USER")
+    POSTGRESS_PASSWORD: Optional[str] = os.getenv("POSTGRES_PASSWORD")
+    POSTGRES_CONNECTION_STRING: str = f"postgresql://{POSTGRESS_USER}:{POSTGRESS_PASSWORD}@postgresserver/db"
 
 
 settings = Settings()

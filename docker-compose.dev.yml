@@ -15,6 +15,11 @@ services:
         env_file:
             - .env
         restart: always
+        depends_on:
+            - redis
+            - celery_worker
+            - flower
+            - db
 
     redis:
         image: redis:latest
@@ -48,3 +53,18 @@ services:
             - redis
             - web
             - celery_worker
+
+    db:
+        hostname: db
+        image: postgres:15
+        container_name: database
+        volumes:
+            - ./data/db:/var/lib/postgresql/data
+#        environment:
+#            - POSTGRES_DB=myfridge
+#            - POSTGRES_USER=myfridge
+#            - POSTGRES_PASSWORD=myfridge123
+        ports:
+            - "5432:5432"
+        env_file:
+            - .env

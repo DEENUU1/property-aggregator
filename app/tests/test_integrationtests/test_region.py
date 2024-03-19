@@ -85,8 +85,11 @@ def test_error_return_status_code_401_delete_region_annoymous_user(client, regio
     assert response.status_code == 401
 
 
-def test_error_return_status_code_404_delete_region_region_does_not_exists(client, user_admin,
-                                                                           user_admin_access_token) -> None:
+def test_error_return_status_code_404_delete_region_region_does_not_exists(
+        client,
+        user_admin,
+        user_admin_access_token
+) -> None:
     test_client, test_session = client
 
     response = test_client.delete(

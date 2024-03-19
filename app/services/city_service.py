@@ -53,6 +53,7 @@ class CityService:
 
         if not self.repository.city_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="City not found")
+
         city = self.repository.get_by_id(_id)
         updated_city = self.repository.update(city, data)
         return updated_city

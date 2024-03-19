@@ -1,9 +1,15 @@
 import pytest
-from repositories.user_repository import UserRepository
-from schemas.user import UserIn
+
 from auth.security import get_password_hash
+from models.offer import CategoryEnum, SubCategoryEnum, BuildingTypeEnum
+from repositories.city_repository import CityRepository
+from repositories.offer_repository import OfferRepository
 from repositories.region_repository import RegionRepository
-from schemas.location import RegionInput
+from repositories.user_repository import UserRepository
+from schemas.location import RegionInput, CityInput
+from schemas.offer import OfferScraper
+from schemas.photo import PhotoInput
+from schemas.user import UserIn
 
 
 @pytest.fixture(scope="function")
@@ -12,6 +18,40 @@ def region(client):
 
     region = RegionRepository(db_session).create(RegionInput(name="Łódzkie"))
     return region
+
+
+@pytest.fixture(scope="function")
+def city(client, region):
+    test_client, db_session = client
+
+    city = CityRepository(db_session).create(CityInput(name="Łódź", region_id=region.id))
+    return city
+
+
+@pytest.fixture(scope="function")
+def offer(client, city):
+    test_client, test_session = client
+    photo_input = PhotoInput(url="https://google.com/img/123")
+
+    data = OfferScraper(
+        title="string",
+        details_url="string",
+        category=CategoryEnum.MIESZKANIE,
+        sub_category=SubCategoryEnum.WYNAJEM,
+        building_type=BuildingTypeEnum.BLOK,
+        price=1000.00,
+        rent=200,
+        description="test",
+        price_per_m=300,
+        area=1000,
+        building_floot=10,
+        floor=1,
+        rooms=2,
+        photos=[photo_input],
+        region_name="Łódzkie",
+        city_name="Łódź",
+    )
+    return OfferRepository(test_session).create(data, city.id)
 
 
 @pytest.fixture(scope="function")
@@ -75,3 +115,28 @@ def user_access_token(user_admin, client):
         data=data,
     ).json()["access_token"]
     return access_token
+
+
+offer_data = {
+    "title": "string",
+    "details_url": "string",
+    "category": "Mieszkanie",
+    "sub_category": "Wynajem",
+    "building_type": "Apartamentowiec",
+    "price": 0,
+    "rent": 0,
+    "description": "string",
+    "price_per_m": 0,
+    "area": 0,
+    "building_floot": 0,
+    "floor": 0,
+    "rooms": 0,
+    "furniture": True,
+    "photos": [
+        {
+            "url": "string"
+        }
+    ],
+    "region_name": "string",
+    "city_name": "string"
+}

@@ -1,6 +1,6 @@
+from auth.security import get_password_hash
 from repositories.user_repository import UserRepository
 from schemas.user import UserIn
-from auth.security import get_password_hash
 
 
 def test_success_return_201_status_code_register(client) -> None:

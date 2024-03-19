@@ -19,7 +19,7 @@ def register(data: UserIn, session: Session = Depends(get_db)):
     return _service.create(data)
 
 
-@router.post("/login")
+@router.post("/login", status_code=201)
 def login(data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_db)):
     _service = UserService(session)
     return _service.login(data)

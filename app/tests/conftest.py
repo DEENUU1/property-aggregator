@@ -1,21 +1,18 @@
 import os
 import sys
+from typing import Generator, Any
 
 import pytest
 from fastapi import FastAPI
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from typing import Generator, Any
-from fastapi.testclient import TestClient
-
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import offer, location, user, favourite, photo, notification, notification_filter
-from main import app
 from config.database import get_db
 from routers.api import router
 from utils.init_db import create_tables
-
 
 engine = create_engine(
     "sqlite:///:memory:",
@@ -33,6 +30,7 @@ def test_init_db() -> None:
     favourite.Favorite.metadata.create_all(bind=engine)
     notification.Notification.metadata.create_all(bind=engine)
     notification_filter.NotificationFilter.metadata.create_all(bind=engine)
+
 
 def start_app():
     app = FastAPI()
@@ -57,7 +55,9 @@ def test_get_db():
         db.close()
         engine.dispose()
 
+
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 @pytest.fixture(scope="function")
 def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
@@ -70,11 +70,9 @@ def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
     connection.close()
 
 
-
-
 @pytest.fixture(scope="function")
 def client(
-    app: FastAPI, db_session: SessionTesting
+        app: FastAPI, db_session: SessionTesting
 ) -> Generator[TestClient, Any, None]:
     """
     Create a new FastAPI TestClient that uses the `db_session` fixture to override
@@ -90,4 +88,4 @@ def client(
 
     app.dependency_overrides[get_db] = _get_test_db
     with TestClient(app) as client:
-        yield client
+        yield client, db_session

@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from conftest import test_get_db
+from ..conftest import test_get_db
 from repositories.user_repository import UserRepository
 from schemas.user import UserIn
 

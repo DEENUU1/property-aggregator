@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from conftest import test_get_db
+from ..conftest import test_get_db
 from models.offer import BuildingTypeEnum, CategoryEnum, SubCategoryEnum
 from repositories.city_repository import CityRepository
 from repositories.favourite_repository import FavouriteRepository

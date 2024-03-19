@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from conftest import test_get_db
+from ..conftest import test_get_db
 from repositories.city_repository import CityRepository
 from repositories.region_repository import RegionRepository
 from schemas.location import CityInput, RegionInput

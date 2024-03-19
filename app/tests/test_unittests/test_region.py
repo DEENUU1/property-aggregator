@@ -1,7 +1,7 @@
 import os
 import sys
 
-from conftest import test_get_db
+from ..conftest import test_get_db
 from repositories.region_repository import RegionRepository
 from schemas.location import RegionInput
 

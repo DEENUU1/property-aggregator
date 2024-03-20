@@ -5,7 +5,7 @@ services:
         hostname: web
         build:
             context: .
-            dockerfile: Dockerfile.app
+            dockerfile: Dockerfile_app
         container_name: web
         command: uvicorn main:app --host 0.0.0.0 --port 8000
         volumes:
@@ -16,9 +16,6 @@ services:
             - .env
         restart: always
         depends_on:
-            - redis
-            - celery_worker
-            - flower
             - db
 
     redis:
@@ -30,7 +27,7 @@ services:
         container_name: "celery_worker"
         build:
             context: .
-            dockerfile: Dockerfile.app
+            dockerfile: Dockerfile_app
         command: celery -A tasks.celery_worker worker --pool=solo --loglevel=info
         volumes:
             - ./app:/app
@@ -43,7 +40,7 @@ services:
         container_name: "flower"
         build:
             context: .
-            dockerfile: Dockerfile.app
+            dockerfile: Dockerfile_app
         command: celery -A tasks.celery_worker flower
         volumes:
             - ./app:/app
@@ -60,10 +57,6 @@ services:
         container_name: database
         volumes:
             - ./data/db:/var/lib/postgresql/data
-#        environment:
-#            - POSTGRES_DB=myfridge
-#            - POSTGRES_USER=myfridge
-#            - POSTGRES_PASSWORD=myfridge123
         ports:
             - "5432:5432"
         env_file:

@@ -48,7 +48,7 @@ This project consists of two separated modules:
 - Breakdown of offers available for sale or rent.
 - Monthly user registration count.
 
-
+**Tests**: In addition, the application is rigorously tested, with over 90 tests written using the pytest library. These tests cover both unit tests, examining the repository layer, and integration tests, evaluating appropriate endpoints in terms of various use cases and configurations. This ensures the reliability and robustness of the application's functionality across different layers and scenarios.
 <img src="assets/123.png" alt="endpoints">
 
 
@@ -141,6 +141,11 @@ docker-compose -f docker-compose.dev.yml build
 #### Run containers
 ```bash
 docker-compose -f docker-compose.dev.yml up
+```
+
+#### Run tests
+```bash
+pytest 
 ```
 
 ### Scrapers

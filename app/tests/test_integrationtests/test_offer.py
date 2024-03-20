@@ -1,7 +1,7 @@
-from .fixtures import user_admin_access_token, user, user_access_token, city, region, offer, offer_data
+from .fixtures import user_admin_access_token, user, user_access_token, city, region, offer, offer_data, user_admin
 
 
-def test_success_return_status_code_201_create_offer(client, user_admin_access_token, city, region) -> None:
+def test_success_return_status_code_201_create_offer(client, user_admin, user_admin_access_token, city, region) -> None:
     test_client, test_session = client
 
     response = test_client.post(
@@ -122,6 +122,7 @@ def test_error_return_status_code_422_get_offer_area_max_lower_than_zero(client,
         "/api/v1/offer?area_max=-1",
     )
     assert response.status_code == 422
+
 
 def test_error_return_status_code_422_get_offer_rooms_lower_than_zero(client, offer) -> None:
     test_client, test_session = client

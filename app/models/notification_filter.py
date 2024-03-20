@@ -4,8 +4,7 @@ from sqlalchemy import String, Boolean, Column, Float, Integer, ForeignKey
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import UUID
 from config.database import Base
-from .offer import CategoryEnum, BuildingTypeEnum, SubCategoryEnum
-
+from .offer import SubCategoryEnum, CategoryEnum, BuildingTypeEnum
 from sqlalchemy.orm import relationship
 
 

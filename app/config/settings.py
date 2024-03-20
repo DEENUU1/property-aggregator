@@ -1,12 +1,16 @@
-from pydantic_settings import BaseSettings
 import os
-from dotenv import load_dotenv
 from typing import Optional
+
+from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
 
 load_dotenv()
 
 
 class Settings(BaseSettings):
+    """
+    Application settings.
+    """
     # FastAPI
     # Debug should be set to False on production
     DEBUG: Optional[bool] = os.getenv("DEBUG") == "True"

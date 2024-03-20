@@ -8,14 +8,34 @@ from enums.offer_sort import OfferSortEnum
 from models.offer import Offer
 from models.photo import Photo
 from schemas.location import CityOutput, RegionOutput
-from schemas.offer import OfferInput, OfferScraper, OfferList
+from schemas.offer import OfferScraper, OfferList
 
 
 class OfferRepository:
+    """
+    Repository class for handling offers.
+    """
+
     def __init__(self, session: Session):
+        """
+        Initialize the repository with a database session.
+
+        Args:
+            session (Session): The database session.
+        """
         self.session = session
 
     def create(self, data: OfferScraper, city_id: str) -> Offer:
+        """
+        Create a new offer.
+
+        Args:
+            data (OfferScraper): The offer data.
+            city_id (str): The ID of the city associated with the offer.
+
+        Returns:
+            Offer: The created offer.
+        """
         db_offer = Offer(**data.model_dump(exclude_none=True, exclude={"photos", "region_name", "city_name"}))
         db_offer.city_id = city_id
         self.session.add(db_offer)
@@ -31,25 +51,56 @@ class OfferRepository:
         return db_offer
 
     def offer_exists_by_url(self, url: str) -> bool:
+        """
+        Check if an offer exists by URL.
+
+        Args:
+            url (str): The URL of the offer.
+
+        Returns:
+            bool: True if the offer exists, False otherwise.
+        """
         offer = self.session.query(Offer).filter_by(details_url=url).first()
-        if offer:
-            return True
-        return False
+        return offer is not None
 
     def offer_exists_by_id(self, _id: UUID4) -> bool:
+        """
+        Check if an offer exists by ID.
+
+        Args:
+            _id (UUID4): The ID of the offer.
+
+        Returns:
+            bool: True if the offer exists, False otherwise.
+        """
         offer = self.session.query(Offer).filter_by(id=_id).first()
-        if offer:
-            return True
-        return False
+        return offer is not None
 
     def get_offer_by_id(self, _id: UUID4) -> Type[Offer]:
+        """
+        Get an offer by ID.
+
+        Args:
+            _id (UUID4): The ID of the offer.
+
+        Returns:
+            Type[Offer]: The offer instance.
+        """
         offer = self.session.query(Offer).filter_by(id=_id).first()
         return offer
 
     def get_details(self, _id: UUID4) -> Dict[str, Any]:
+        """
+        Get details of an offer by ID.
+
+        Args:
+            _id (UUID4): The ID of the offer.
+
+        Returns:
+            Dict[str, Any]: Details of the offer.
+        """
         offer = self.session.query(Offer).filter_by(id=_id).first()
         photo_list = [{"url": photo.url} for photo in offer.photos]
-
         return self._map_model_to_schema(offer, photo_list)
 
     def get_all(
@@ -69,6 +120,28 @@ class OfferRepository:
             query: str = None,
             sort_by: OfferSortEnum = OfferSortEnum.NEWEST,
     ) -> OfferList:
+        """
+        Get all offers based on filters and sorting parameters.
+
+        Args:
+            offset (int): Offset for pagination.
+            page_limit (int): Page size for pagination.
+            category (str): Offer category.
+            sub_category (str): Offer sub-category.
+            building_type (str): Building type.
+            price_min (int): Minimum price.
+            price_max (int): Maximum price.
+            area_min (int): Minimum area.
+            area_max (int): Maximum area.
+            rooms (int): Number of rooms.
+            furniture (bool): Furniture availability.
+            floor (int): Floor number.
+            query (str): Search query.
+            sort_by (OfferSortEnum): Sorting criteria.
+
+        Returns:
+            OfferList: List of offers with pagination information.
+        """
         offers = self.session.query(Offer)
 
         if query:
@@ -116,12 +189,31 @@ class OfferRepository:
         return result
 
     def delete(self, offer: Type[Offer]) -> bool:
+        """
+        Delete an offer.
+
+        Args:
+            offer (Type[Offer]): The offer instance.
+
+        Returns:
+            bool: True if deletion was successful, False otherwise.
+        """
         self.session.delete(offer)
         self.session.commit()
         return True
 
     @staticmethod
     def _map_model_to_schema(offer: Type[Offer], photo_list: List[Dict]) -> Dict[str, Any]:
+        """
+        Map offer model to schema.
+
+        Args:
+            offer (Type[Offer]): The offer instance.
+            photo_list (List[Dict]): List of photo dictionaries.
+
+        Returns:
+            Dict[str, Any]: Mapped offer data.
+        """
         data = {
             "id": offer.id,
             "title": offer.title,

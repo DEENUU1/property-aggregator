@@ -1,29 +1,46 @@
 from typing import Dict, Any
 
+from fastapi import HTTPException
 from pydantic import UUID4
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
 
+from enums.offer_sort import OfferSortEnum
 from models.offer import Offer
 from repositories.city_repository import CityRepository
 from repositories.offer_repository import OfferRepository
 from repositories.region_repository import RegionRepository
 from schemas.location import RegionInput, CityInput
-from schemas.offer import OfferOutput, OfferScraper, OfferList
-from enums.offer_sort import OfferSortEnum
-from schemas.user import UserIn
+from schemas.offer import OfferScraper, OfferList
 from services.user_service import UserService
 
 
 class OfferService:
+    """
+    Service class for handling offers.
+    """
 
     def __init__(self, session: Session):
+        """
+        Initialize the service.
+
+        Args:
+            session (Session): Database session.
+        """
         self.repository = OfferRepository(session)
         self.region_repository = RegionRepository(session)
         self.city_repository = CityRepository(session)
         self.user_service = UserService(session)
 
     def create(self, offer: OfferScraper) -> Offer:
+        """
+        Create a new offer.
+
+        Args:
+            offer (OfferScraper): Details of the offer to be created.
+
+        Returns:
+            Offer: Details of the created offer.
+        """
         if self.repository.offer_exists_by_url(offer.details_url):
             raise HTTPException(status_code=400, detail="Offer already exists")
 
@@ -39,6 +56,16 @@ class OfferService:
         return offer_obj
 
     def delete(self, _id: int, user_id: UUID4) -> bool:
+        """
+        Delete an offer.
+
+        Args:
+            _id (int): ID of the offer to be deleted.
+            user_id (UUID4): ID of the user performing the action.
+
+        Returns:
+            bool: True if deletion is successful, False otherwise.
+        """
         if not self.user_service.is_superuser(user_id):
             raise HTTPException(status_code=403, detail="Forbidden")
 
@@ -65,6 +92,28 @@ class OfferService:
             query: str = None,
             sort_by: OfferSortEnum = OfferSortEnum.NEWEST
     ) -> OfferList:
+        """
+        Retrieve a list of offers based on filtering criteria.
+
+        Args:
+            offset (int): Offset for pagination.
+            page_size (int): Number of offers per page.
+            category (str): Offer category.
+            sub_category (str): Offer sub-category.
+            building_type (str): Type of building.
+            price_min (int): Minimum price.
+            price_max (int): Maximum price.
+            area_min (int): Minimum area.
+            area_max (int): Maximum area.
+            rooms (int): Number of rooms.
+            furniture (bool): Indicates whether the offer is furnished.
+            floor (int): Floor number.
+            query (str): Search query.
+            sort_by (OfferSortEnum): Sorting criteria.
+
+        Returns:
+            OfferList: List of offers based on the provided criteria.
+        """
         return self.repository.get_all(
             offset,
             page_size,
@@ -83,6 +132,15 @@ class OfferService:
         )
 
     def get_by_id(self, _id: UUID4) -> Dict[str, Any]:
+        """
+        Retrieve details of an offer by its ID.
+
+        Args:
+            _id (UUID4): ID of the offer.
+
+        Returns:
+            Dict[str, Any]: Details of the offer.
+        """
         if not self.repository.offer_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="Offer not found")
         return self.repository.get_details(_id)

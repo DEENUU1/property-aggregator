@@ -11,6 +11,9 @@ from models.notification import notification_offer_association
 
 
 class CategoryEnum(str, Enum):
+    """
+    Enumeration for categories.
+    """
     MIESZKANIE = "Mieszkanie"  # or kawalerka
     POKOJ = "Pokój"
     DOM = "Dom"
@@ -22,17 +25,23 @@ class CategoryEnum(str, Enum):
     POZOSTALE = "Pozostałe"  # Inwestycje
 
 
-class SubCategoryEnum(str, Enum):
-    WYNAJEM = "Wynajem"
-    SPRZEDAZ = "Sprzedaż"
-
-
 class BuildingTypeEnum(str, Enum):
+    """
+    Enumeration for types of buildings.
+    """
     APARTAMENTOWIEC = "Apartamentowiec"
     BLOK = "Blok"
     KAMIENICA = "Kamienica"
     POZOSTALE = "Pozostałe"
     LOFT = "Loft"
+
+
+class SubCategoryEnum(str, Enum):
+    """
+    Enumeration for subcategories.
+    """
+    WYNAJEM = "Wynajem"
+    SPRZEDAZ = "Sprzedaż"
 
 
 class Offer(Base):

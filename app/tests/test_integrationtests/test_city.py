@@ -42,8 +42,12 @@ def test_error_return_status_code_401_create_city_without_authorization(client, 
     assert response.status_code == 401
 
 
-
-def test_error_return_status_code_401_create_city_with_invalid_authorization(client, user, region, user_access_token) -> None:
+def test_error_return_status_code_401_create_city_with_invalid_authorization(
+        client,
+        user,
+        region,
+        user_access_token
+) -> None:
     test_client, test_session = client
 
     response = test_client.post(
@@ -92,7 +96,6 @@ def test_error_return_status_code_401_delete_city_without_authorization(client, 
         f"api/v1/location/city/{city.id}",
     )
     assert response.status_code == 401
-
 
 
 def test_error_return_status_code_401_delete_city_with_invalid_authorization(

@@ -136,4 +136,3 @@ def test_error_return_status_code_401_get_all_by_user_anonymous_user(
         "api/v1/favourite",
     )
     assert response.status_code == 401
-

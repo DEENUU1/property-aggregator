@@ -1,4 +1,14 @@
-from .fixtures import user, notification, notification_filter, user_admin, user_admin_access_token, offer, region, city, user_access_token
+from .fixtures import (
+    user,
+    notification,
+    notification_filter,
+    user_admin,
+    user_admin_access_token,
+    offer,
+    region,
+    city,
+    user_access_token
+)
 
 
 def test_success_return_status_code_201_create_filter(client, user, user_access_token) -> None:
@@ -43,7 +53,11 @@ def test_error_return_status_code_401_update_status_annonymous_user(client, noti
     assert response.status_code == 401
 
 
-def test_error_return_status_code_404_update_status_notification_filter_not_found(client, user, user_access_token) -> None:
+def test_error_return_status_code_404_update_status_notification_filter_not_found(
+        client,
+        user,
+        user_access_token
+) -> None:
     test_client, test_session = client
 
     response = test_client.put(
@@ -54,7 +68,12 @@ def test_error_return_status_code_404_update_status_notification_filter_not_foun
     assert response.status_code == 404
 
 
-def test_error_return_status_code_403_update_status_notification_filter_invalid_user(client, user_admin, user_admin_access_token, notification_filter) -> None:
+def test_error_return_status_code_403_update_status_notification_filter_invalid_user(
+        client,
+        user_admin,
+        user_admin_access_token,
+        notification_filter
+) -> None:
     test_client, test_session = client
 
     response = test_client.put(
@@ -65,7 +84,12 @@ def test_error_return_status_code_403_update_status_notification_filter_invalid_
     assert response.status_code == 403
 
 
-def test_success_return_status_code_204_delete_notification_filter(client, user, user_access_token, notification_filter) -> None:
+def test_success_return_status_code_204_delete_notification_filter(
+        client,
+        user,
+        user_access_token,
+        notification_filter
+) -> None:
     test_client, test_session = client
 
     response = test_client.delete(
@@ -75,7 +99,12 @@ def test_success_return_status_code_204_delete_notification_filter(client, user,
     assert response.status_code == 204
 
 
-def test_error_return_status_code_404_delete_notification_filter_not_found(client, user, user_access_token, notification_filter) -> None:
+def test_error_return_status_code_404_delete_notification_filter_not_found(
+        client,
+        user,
+        user_access_token,
+        notification_filter
+) -> None:
     test_client, test_session = client
 
     response = test_client.delete(
@@ -94,7 +123,12 @@ def test_error_return_status_code_401_delete_notification_filter_annonymous_user
     assert response.status_code == 401
 
 
-def test_error_return_status_code_403_delete_notification_filter_invalid_user(client, notification_filter, user_admin, user_admin_access_token) -> None:
+def test_error_return_status_code_403_delete_notification_filter_invalid_user(
+        client,
+        notification_filter,
+        user_admin,
+        user_admin_access_token
+) -> None:
     test_client, test_session = client
 
     response = test_client.delete(
@@ -114,7 +148,12 @@ def test_success_return_status_code_200_get_all_by_user(client, user, user_acces
     assert response.status_code == 200
 
 
-def test_success_return_status_code_200_get_notifications_by_user(client, user, user_access_token, notification) -> None:
+def test_success_return_status_code_200_get_notifications_by_user(
+        client,
+        user,
+        user_access_token,
+        notification
+) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -143,7 +182,12 @@ def test_success_return_status_code_200_get_notification_by_user(client, user, u
     assert response.status_code == 200
 
 
-def test_error_return_status_code_404_get_notification_by_user_not_found(client, user, user_access_token, notification) -> None:
+def test_error_return_status_code_404_get_notification_by_user_not_found(
+        client,
+        user,
+        user_access_token,
+        notification
+) -> None:
     test_client, test_session = client
 
     response = test_client.get(

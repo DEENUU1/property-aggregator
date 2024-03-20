@@ -13,6 +13,9 @@ app = FastAPI(
 
 @app.on_event("startup")
 def on_startup() -> None:
+    """
+    Initializes the database tables when the application starts up.
+    """
     create_tables()
 
 
@@ -22,8 +25,6 @@ else:
     origins = [
         str(origin).strip(",") for origin in settings.ORIGINS
     ]
-    app_configs = {"openapi_url": None}
-    app = FastAPI(**app_configs)
 
 app.add_middleware(
     CORSMiddleware,

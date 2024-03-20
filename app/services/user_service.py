@@ -5,19 +5,36 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
-from auth.security import get_password_hash
-from auth.security import pwd_context, create_access_token
+from auth.security import get_password_hash, pwd_context, create_access_token
 from config.settings import settings
 from repositories.user_repository import UserRepository
 from schemas.user import UserIn, UserInDBBase
 
 
 class UserService:
+    """
+    Service class for handling user-related operations.
+    """
 
     def __init__(self, session: Session):
+        """
+        Initialize the service.
+
+        Args:
+            session (Session): Database session.
+        """
         self.repository = UserRepository(session)
 
     def create(self, data: UserIn) -> UserInDBBase:
+        """
+        Create a new user.
+
+        Args:
+            data (UserIn): User data.
+
+        Returns:
+            UserInDBBase: Created user data.
+        """
         if self.repository.user_exists_by_email(data.email):
             raise HTTPException(status_code=400, detail="Username already registered")
         if self.repository.user_exists_by_username(data.username):
@@ -28,6 +45,15 @@ class UserService:
         return user
 
     def login(self, data: OAuth2PasswordRequestForm):
+        """
+        User login.
+
+        Args:
+            data (OAuth2PasswordRequestForm): Login form data.
+
+        Returns:
+            dict: Token response.
+        """
         user = self.repository.get_user_by_username(data.username)
         if not user or not pwd_context.verify(data.password, user.hashed_password):
             raise HTTPException(
@@ -40,6 +66,15 @@ class UserService:
         return {"access_token": access_token, "token_type": "bearer"}
 
     def is_superuser(self, _id: UUID4) -> bool:
+        """
+        Check if the user is a superuser.
+
+        Args:
+            _id (UUID4): User ID.
+
+        Returns:
+            bool: True if the user is a superuser, False otherwise.
+        """
         if not self.repository.user_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="User not found")
 
@@ -47,6 +82,15 @@ class UserService:
         return user.is_superuser
 
     def delete_user(self, _id: UUID4) -> bool:
+        """
+        Delete a user.
+
+        Args:
+            _id (UUID4): User ID.
+
+        Returns:
+            bool: True if the user is successfully deleted, False otherwise.
+        """
         if not self.repository.user_exists_by_id(_id):
             raise HTTPException(status_code=404, detail="User not found")
 

@@ -78,6 +78,9 @@ def save_offer(offer: Offer) -> bool:
 
     Args:
         offer (Offer): The offer object to be saved.
+
+    Returns:
+        bool: True if the offer is successfully saved, False otherwise.
     """
     try:
         mapped_offer = map_offer(offer)

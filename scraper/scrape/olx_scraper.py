@@ -7,10 +7,26 @@ import json
 
 
 class OlxScraper(ScrapeStrategy):
+    """
+    OLX Scraper class for scraping OLX website.
+
+    Attributes:
+        __service (OlxService): An instance of OlxService.
+    """
+
     __service = olx_service.OlxService()
 
     @staticmethod
     def __get_content(url: str) -> Optional[Dict[str, Any]]:
+        """
+        Get content from a given URL.
+
+        Args:
+            url (str): The URL to fetch content from.
+
+        Returns:
+            Optional[Dict[str, Any]]: A dictionary containing fetched content, or None if failed.
+        """
         try:
             response = requests.get(url)
             response.raise_for_status()
@@ -27,6 +43,15 @@ class OlxScraper(ScrapeStrategy):
 
     @staticmethod
     def __get_next_page_url(content: Dict[str, Any]) -> Optional[str]:
+        """
+        Get the URL of the next page from fetched content.
+
+        Args:
+            content (Dict[str, Any]): The fetched content as a dictionary.
+
+        Returns:
+            Optional[str]: The URL of the next page, or None if not found.
+        """
         links = content.get("links", None)
         if not links:
             return None
@@ -37,6 +62,7 @@ class OlxScraper(ScrapeStrategy):
         return url
 
     def scrape(self):
+        """Scrape data from OLX."""
         print("Run OLX scraper")
 
         CATEGORIES = {

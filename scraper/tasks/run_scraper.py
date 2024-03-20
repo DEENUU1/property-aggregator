@@ -3,9 +3,18 @@ from scrape import olx_scraper, scraper, otodom_scraper
 
 
 def run_scrape(site: Site) -> None:
-    if site == site.OLX:
+    """
+    Run scraping for the specified site.
+
+    Args:
+        site (Site): The site to scrape.
+
+    Returns:
+        None
+    """
+    if site == Site.OLX:
         site_scraper = olx_scraper.OlxScraper()
-    elif site == site.OTODOM:
+    elif site == Site.OTODOM:
         site_scraper = otodom_scraper.OtodomScraper()
     else:
         raise ValueError(f"Unknown site: {site}")

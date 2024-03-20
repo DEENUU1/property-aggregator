@@ -1,17 +1,26 @@
 from data.site import Site
 from export.save import save_offer
 from parser import olx_parser, otodom_parser
+from parser.parser import Parser
 from service.olx_service import OlxService
 from service.otodom_service import OtodomService
-from parser.parser import Parser
 
 
 def run_parser(site: Site) -> None:
-    if site == site.OLX:
+    """
+    Run the parser for the specified site.
+
+    Args:
+        site (Site): The site to parse.
+
+    Returns:
+        None
+    """
+    if site == Site.OLX:
         service = OlxService()
         parser = olx_parser.OlxParser()
 
-    elif site == site.OTODOM:
+    elif site == Site.OTODOM:
         service = OtodomService()
         parser = otodom_parser.OtodomParser()
 
@@ -28,4 +37,4 @@ def run_parser(site: Site) -> None:
         for offer in parse:
             save_offer(offer)
             service.update_parsed(d.get("id"))
-            print(f"Offer with id: {d.get("_id")} parsed")
+            print(f"Offer with id: {d.get('_id')} parsed")

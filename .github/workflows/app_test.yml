@@ -24,5 +24,7 @@ jobs:
         env:
           ACCESS_TOKEN_EXPIRE_MINUTES: "30"
           DEBUG: "True"
+          ALGORITHM: "HS256"
+          SECRET_KEY: "test"
         run: |
           pytest

@@ -23,5 +23,6 @@ jobs:
         working-directory: ./app
         env:
           ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+          DEBUG: "True"
         run: |
           pytest

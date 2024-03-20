@@ -1,8 +1,7 @@
-from .fixtures import user_admin, user_admin_access_token, user, user_access_token, city, region, offer, offer_data
-from models.offer import CategoryEnum, SubCategoryEnum
+from .fixtures import user_admin_access_token, user, user_access_token, city, region, offer, offer_data
 
 
-def test_success_return_status_code_201_create_offer(client, user_admin_access_token, city, region):
+def test_success_return_status_code_201_create_offer(client, user_admin_access_token, city, region) -> None:
     test_client, test_session = client
 
     response = test_client.post(
@@ -13,7 +12,7 @@ def test_success_return_status_code_201_create_offer(client, user_admin_access_t
     assert response.status_code == 201
 
 
-def test_error_return_status_code_400_create_offer_already_exists(client, city, region, offer):
+def test_error_return_status_code_400_create_offer_already_exists(client, city, region, offer) -> None:
     test_client, test_session = client
 
     response = test_client.post(
@@ -23,7 +22,7 @@ def test_error_return_status_code_400_create_offer_already_exists(client, city, 
     assert response.status_code == 400
 
 
-def test_success_return_status_code_204_delete_offer(client, user_admin_access_token, offer):
+def test_success_return_status_code_204_delete_offer(client, user_admin_access_token, offer) -> None:
     test_client, test_session = client
 
     response = test_client.delete(
@@ -33,7 +32,7 @@ def test_success_return_status_code_204_delete_offer(client, user_admin_access_t
     assert response.status_code == 204
 
 
-def test_error_return_status_code_404_delete_offer_not_found(client, user_admin_access_token):
+def test_error_return_status_code_404_delete_offer_not_found(client, user_admin_access_token) -> None:
     test_client, test_session = client
 
     response = test_client.delete(
@@ -43,7 +42,7 @@ def test_error_return_status_code_404_delete_offer_not_found(client, user_admin_
     assert response.status_code == 404
 
 
-def test_error_return_status_code_401_delete_offer_unauthorized(client, offer):
+def test_error_return_status_code_401_delete_offer_unauthorized(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.delete(
@@ -52,7 +51,7 @@ def test_error_return_status_code_401_delete_offer_unauthorized(client, offer):
     assert response.status_code == 401
 
 
-def test_error_return_status_code_403_delete_offer_user(client, offer, user, user_access_token):
+def test_error_return_status_code_403_delete_offer_user(client, offer, user, user_access_token) -> None:
     test_client, test_session = client
 
     response = test_client.delete(
@@ -62,7 +61,7 @@ def test_error_return_status_code_403_delete_offer_user(client, offer, user, use
     assert response.status_code == 403
 
 
-def test_success_return_status_code_200_get_offers(client, offer):
+def test_success_return_status_code_200_get_offers(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -71,7 +70,7 @@ def test_success_return_status_code_200_get_offers(client, offer):
     assert response.status_code == 200
 
 
-def test_success_return_status_code_200_get_offer_valid_params(client, offer):
+def test_success_return_status_code_200_get_offer_valid_params(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -79,7 +78,8 @@ def test_success_return_status_code_200_get_offer_valid_params(client, offer):
     )
     assert response.status_code == 200
 
-def test_error_return_status_code_422_get_offer_page_number_lower_than_zero(client, offer):
+
+def test_error_return_status_code_422_get_offer_page_number_lower_than_zero(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -88,7 +88,7 @@ def test_error_return_status_code_422_get_offer_page_number_lower_than_zero(clie
     assert response.status_code == 422
 
 
-def test_error_return_status_code_422_get_offer_price_min_lower_than_zero(client, offer):
+def test_error_return_status_code_422_get_offer_price_min_lower_than_zero(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -97,7 +97,7 @@ def test_error_return_status_code_422_get_offer_price_min_lower_than_zero(client
     assert response.status_code == 422
 
 
-def test_error_return_status_code_422_get_offer_price_max_lower_than_zero(client, offer):
+def test_error_return_status_code_422_get_offer_price_max_lower_than_zero(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -106,7 +106,7 @@ def test_error_return_status_code_422_get_offer_price_max_lower_than_zero(client
     assert response.status_code == 422
 
 
-def test_error_return_status_code_422_get_offer_area_min_lower_than_zero(client, offer):
+def test_error_return_status_code_422_get_offer_area_min_lower_than_zero(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -115,7 +115,7 @@ def test_error_return_status_code_422_get_offer_area_min_lower_than_zero(client,
     assert response.status_code == 422
 
 
-def test_error_return_status_code_422_get_offer_area_max_lower_than_zero(client, offer):
+def test_error_return_status_code_422_get_offer_area_max_lower_than_zero(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -123,7 +123,7 @@ def test_error_return_status_code_422_get_offer_area_max_lower_than_zero(client,
     )
     assert response.status_code == 422
 
-def test_error_return_status_code_422_get_offer_rooms_lower_than_zero(client, offer):
+def test_error_return_status_code_422_get_offer_rooms_lower_than_zero(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -132,7 +132,7 @@ def test_error_return_status_code_422_get_offer_rooms_lower_than_zero(client, of
     assert response.status_code == 422
 
 
-def test_success_return_status_code_200_get_offer(client, offer):
+def test_success_return_status_code_200_get_offer(client, offer) -> None:
     test_client, test_session = client
 
     response = test_client.get(
@@ -141,7 +141,7 @@ def test_success_return_status_code_200_get_offer(client, offer):
     assert response.status_code == 200
 
 
-def test_error_return_status_code_404_get_offer_not_found(client):
+def test_error_return_status_code_404_get_offer_not_found(client) -> None:
     test_client, test_session = client
 
     response = test_client.get(

@@ -10,6 +10,8 @@ from schemas.location import RegionInput, CityInput
 from schemas.offer import OfferScraper
 from schemas.photo import PhotoInput
 from schemas.user import UserIn
+from schemas.favourite import FavouriteInput
+from repositories.favourite_repository import FavouriteRepository
 
 
 @pytest.fixture(scope="function")
@@ -105,7 +107,7 @@ def user_admin_access_token(user_admin, client):
 
 
 @pytest.fixture(scope="function")
-def user_access_token(user_admin, client):
+def user_access_token(user, client):
     test_client, db_session = client
 
     data = {'grant_type': '', 'username': 'XXXX2', 'password': "XXXX", 'scope': '', 'client_id': '',
@@ -115,6 +117,13 @@ def user_access_token(user_admin, client):
         data=data,
     ).json()["access_token"]
     return access_token
+
+
+@pytest.fixture(scope="function")
+def favourite(client, user, offer):
+    test_client, db_session = client
+
+    return FavouriteRepository(db_session).create(FavouriteInput(user_id=user.id, offer_id=offer.id))
 
 
 offer_data = {

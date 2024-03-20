@@ -12,6 +12,10 @@ from schemas.photo import PhotoInput
 from schemas.user import UserIn
 from schemas.favourite import FavouriteInput
 from repositories.favourite_repository import FavouriteRepository
+from repositories.notification_repository import NotificationRepository
+from repositories.notificationfilter_repository import NotificationFilterRepository
+from schemas.notification import NotificationInput
+from schemas.notification_filter import NotificationFilterInput
 
 
 @pytest.fixture(scope="function")
@@ -124,6 +128,31 @@ def favourite(client, user, offer):
     test_client, db_session = client
 
     return FavouriteRepository(db_session).create(FavouriteInput(user_id=user.id, offer_id=offer.id))
+
+
+@pytest.fixture(scope="function")
+def notification(client, user, offer):
+    test_client, db_session = client
+
+    return NotificationRepository(db_session).create(
+        NotificationInput(
+            user_id=user.id,
+            title="New 4 offers",
+            message="test message"
+        )
+    )
+
+
+@pytest.fixture(scope="function")
+def notification_filter(client, user):
+    test_client, db_session = client
+
+    return NotificationFilterRepository(db_session).create(
+        NotificationFilterInput(
+            user_id=user.id,
+            category=CategoryEnum.MIESZKANIE,
+        )
+    )
 
 
 offer_data = {

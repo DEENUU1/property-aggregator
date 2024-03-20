@@ -17,8 +17,11 @@ router = APIRouter(
 
 
 @router.post("", status_code=201, response_model=RegionOutput)
-def create_region(data: RegionInput, session: Session = Depends(get_db),
-                  current_user: UserIn = Depends(get_current_user)):
+def create_region(
+        data: RegionInput,
+        session: Session = Depends(get_db),
+        current_user: UserIn = Depends(get_current_user)
+):
     """
     Create a new region.
 
@@ -50,8 +53,11 @@ def get_regions(session: Session = Depends(get_db)) -> List[RegionOutput]:
 
 
 @router.delete("/{_id}", status_code=204)
-def delete_region(_id: UUID4, session: Session = Depends(get_db),
-                  current_user: UserIn = Depends(get_current_user)):
+def delete_region(
+        _id: UUID4,
+        session: Session = Depends(get_db),
+        current_user: UserIn = Depends(get_current_user)
+):
     """
     Delete a region.
 
@@ -68,8 +74,12 @@ def delete_region(_id: UUID4, session: Session = Depends(get_db),
 
 
 @router.put("/{_id}", status_code=200, response_model=RegionInput)
-def update_region(_id: UUID4, data: RegionInput, session: Session = Depends(get_db),
-                  current_user: UserIn = Depends(get_current_user)):
+def update_region(
+        _id: UUID4,
+        data: RegionInput,
+        session: Session = Depends(get_db),
+        current_user: UserIn = Depends(get_current_user)
+):
     """
     Update a region.
 

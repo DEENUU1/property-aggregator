@@ -23,8 +23,11 @@ router = APIRouter(
 
 
 @router.post("/filter", status_code=201, response_model=NotificationFilterOutput)
-def create(notification: NotificationFilterInput, db: Session = Depends(get_db),
-           current_user: UserInDB = Depends(get_current_user)):
+def create(
+        notification: NotificationFilterInput,
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Create a new notification filter for the current user.
 
@@ -42,8 +45,12 @@ def create(notification: NotificationFilterInput, db: Session = Depends(get_db),
 
 
 @router.put("/filter/{_id}", status_code=200)
-def update_status(status: NotificationFilterUpdateStatus, _id: UUID4, db: Session = Depends(get_db),
-                  current_user: UserInDB = Depends(get_current_user)):
+def update_status(
+        status: NotificationFilterUpdateStatus,
+        _id: UUID4,
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Update the status of a notification filter.
 
@@ -61,8 +68,11 @@ def update_status(status: NotificationFilterUpdateStatus, _id: UUID4, db: Sessio
 
 
 @router.delete("/filter/{_id}", status_code=204)
-def delete(_id: UUID4, db: Session = Depends(get_db),
-           current_user: UUID4 = Depends(get_current_user)):
+def delete(
+        _id: UUID4,
+        db: Session = Depends(get_db),
+        current_user: UUID4 = Depends(get_current_user)
+):
     """
     Delete a notification filter.
 
@@ -79,8 +89,10 @@ def delete(_id: UUID4, db: Session = Depends(get_db),
 
 
 @router.get("/filter", status_code=200, response_model=List[NotificationFilterOutput])
-def get_all_by_user(db: Session = Depends(get_db),
-                    current_user: UserInDB = Depends(get_current_user)):
+def get_all_by_user(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve all notification filters belonging to the current user.
 
@@ -96,8 +108,10 @@ def get_all_by_user(db: Session = Depends(get_db),
 
 
 @router.get("", status_code=200, response_model=List[NotificationOutput])
-def get_notifications_by_user(db: Session = Depends(get_db),
-                              current_user: UserInDB = Depends(get_current_user)):
+def get_notifications_by_user(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve all notifications belonging to the current user.
 
@@ -113,8 +127,11 @@ def get_notifications_by_user(db: Session = Depends(get_db),
 
 
 @router.get("/{_id}", status_code=200, response_model=NotificationOutput)
-def get_notification_by_user(_id: UUID4, db: Session = Depends(get_db),
-                             current_user: UserInDB = Depends(get_current_user)):
+def get_notification_by_user(
+        _id: UUID4,
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve a specific notification belonging to the current user.
 
@@ -131,8 +148,10 @@ def get_notification_by_user(_id: UUID4, db: Session = Depends(get_db),
 
 
 @router.get("/unread", status_code=200)
-def get_unread_user_count(db: Session = Depends(get_db),
-                          current_user: UserInDB = Depends(get_current_user)):
+def get_unread_user_count(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve the count of unread notifications for the current user.
 

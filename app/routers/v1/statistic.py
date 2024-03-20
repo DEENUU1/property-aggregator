@@ -14,8 +14,10 @@ router = APIRouter(
 
 
 @router.get("/offer/timeline")
-def get_offer_timeline(db: Session = Depends(get_db),
-                       current_user: UserInDB = Depends(get_current_user)):
+def get_offer_timeline(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve offer statistics over time.
 
@@ -31,8 +33,10 @@ def get_offer_timeline(db: Session = Depends(get_db),
 
 
 @router.get("/offer/category")
-def get_offer_count_by_category(db: Session = Depends(get_db),
-                                current_user: UserInDB = Depends(get_current_user)):
+def get_offer_count_by_category(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve offer count grouped by category.
 
@@ -48,8 +52,10 @@ def get_offer_count_by_category(db: Session = Depends(get_db),
 
 
 @router.get("/offer/subcategory")
-def get_offer_count_by_subcategory(db: Session = Depends(get_db),
-                                   current_user: UserInDB = Depends(get_current_user)):
+def get_offer_count_by_subcategory(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve offer count grouped by subcategory.
 
@@ -65,8 +71,10 @@ def get_offer_count_by_subcategory(db: Session = Depends(get_db),
 
 
 @router.get("/user/timeline")
-def get_user_timeline(db: Session = Depends(get_db),
-                      current_user: UserInDB = Depends(get_current_user)):
+def get_user_timeline(
+        db: Session = Depends(get_db),
+        current_user: UserInDB = Depends(get_current_user)
+):
     """
     Retrieve user statistics over time.
 

@@ -6,7 +6,7 @@ def test_success_return_status_code_201_create_offer(client, user_admin, user_ad
 
     response = test_client.post(
         "/api/v1/offer",
-        json=offer_data,
+        json=[offer_data],
         headers={"Authorization": f"Bearer {user_admin_access_token}"},
     )
     assert response.status_code == 201
@@ -17,7 +17,7 @@ def test_error_return_status_code_400_create_offer_already_exists(client, city, 
 
     response = test_client.post(
         "/api/v1/offer",
-        json=offer_data,
+        json=[offer_data],
     )
     assert response.status_code == 400
 

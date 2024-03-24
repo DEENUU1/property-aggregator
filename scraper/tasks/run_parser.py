@@ -34,7 +34,6 @@ def run_parser(site: Site) -> None:
         category, sub_category = d.get("category", None), d.get("sub_category", None)
 
         parse = Parser(parser).parse(data, category=category, sub_category=sub_category)
-        for offer in parse:
-            save_offer(offer)
-            service.update_parsed(d.get("id"))
-            print(f"Offer with id: {d.get('_id')} parsed")
+        save_offer(parse)
+        service.update_parsed(d.get("id"))
+        print(f"Offer with id: {d.get('_id')} parsed")

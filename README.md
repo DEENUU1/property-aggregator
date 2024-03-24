@@ -108,6 +108,7 @@ parse-olx
     - Requests
     - Beautiful Soup 4
     - Typer
+    - Alembic
 - PostgreSQL
 - Mongodb
 - SQLite

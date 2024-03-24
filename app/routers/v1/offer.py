@@ -16,16 +16,16 @@ router = APIRouter(
 
 
 @router.post("", status_code=201)
-def create(offer: OfferScraper, session: Session = Depends(get_db)):
+def create(offer: List[OfferScraper], session: Session = Depends(get_db)):
     """
-    Create a new offer.
+    Create a new offers.
 
     Args:
         offer (OfferScraper): Details of the offer to be created.
         session (Session): Database session.
 
     Returns:
-        OfferScraper: Details of the created offer.
+        List[OfferScraper]: Details of the created offers.
     """
     _service = OfferService(session).create(offer)
     return _service

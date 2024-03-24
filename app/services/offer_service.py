@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -31,29 +31,32 @@ class OfferService:
         self.city_repository = CityRepository(session)
         self.user_service = UserService(session)
 
-    def create(self, offer: OfferScraper) -> Offer:
+    def create(self, offers: List[OfferScraper]) -> List[Offer]:
         """
-        Create a new offer.
+        Create a new offers.
 
         Args:
-            offer (OfferScraper): Details of the offer to be created.
+            offers (List[OfferScraper]): Details of the offer to be created.
 
         Returns:
-            Offer: Details of the created offer.
+            List[Offer}: Details of the created offers.
         """
-        if self.repository.offer_exists_by_url(offer.details_url):
-            raise HTTPException(status_code=400, detail="Offer already exists")
+        result = []
+        for offer in offers:
 
-        if not self.region_repository.region_exists_by_name(offer.region_name):
-            self.region_repository.create(RegionInput(name=offer.region_name))
-        region = self.region_repository.get_by_name(offer.region_name)
+            if self.repository.offer_exists_by_url(offer.details_url):
+                raise HTTPException(status_code=400, detail="Offer already exists")
 
-        if not self.city_repository.city_exists_by_name(offer.city_name):
-            self.city_repository.create(CityInput(name=offer.city_name, region_id=region.id))
-        city = self.city_repository.get_by_name(offer.city_name)
+            if not self.region_repository.region_exists_by_name(offer.region_name):
+                self.region_repository.create(RegionInput(name=offer.region_name))
+            region = self.region_repository.get_by_name(offer.region_name)
 
-        offer_obj = self.repository.create(offer, city.id)
-        return offer_obj
+            if not self.city_repository.city_exists_by_name(offer.city_name):
+                self.city_repository.create(CityInput(name=offer.city_name, region_id=region.id))
+            city = self.city_repository.get_by_name(offer.city_name)
+
+            result.append(self.repository.create(offer, city.id))
+        return result
 
     def delete(self, _id: int, user_id: UUID4) -> bool:
         """

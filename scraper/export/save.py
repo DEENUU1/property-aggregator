@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import requests
 
@@ -39,20 +39,20 @@ def map_offer(offer: Offer) -> Dict[str, Any]:
     return data
 
 
-def post(offer: Dict[str, Any]) -> bool:
+def post(offers: List[Dict[str, Any]]) -> bool:
     """
     Post offer data to the server.
 
     Args:
-        offer (Dict[str, Any]): A dictionary containing offer data.
+        offers (List[Dict[str, Any]]): A dictionary containing offer data.
 
     Returns:
         bool: True if the offer is successfully saved, False otherwise.
     """
     try:
         response = requests.post(
-            "http://localhost:8000/api/v1/offer/scraper",
-            data=json.dumps(offer),
+            "http://localhost:8000/api/v1/offer",
+            data=json.dumps(offers),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -72,19 +72,22 @@ def post(offer: Dict[str, Any]) -> bool:
         return False
 
 
-def save_offer(offer: Offer) -> bool:
+def save_offer(offers: List[Offer]) -> bool:
     """
     Save offer by mapping, then posting it to the server.
 
     Args:
-        offer (Offer): The offer object to be saved.
+        offers (List[Offer]): The offer object to be saved.
 
     Returns:
         bool: True if the offer is successfully saved, False otherwise.
     """
     try:
-        mapped_offer = map_offer(offer)
-        post(mapped_offer)
+        offers_to_send = []
+        for offer in offers:
+            mapped_offer = map_offer(offer)
+            offers_to_send.append(mapped_offer)
+        post(offers_to_send)
         return True
     except Exception as e:
         print(f"Save offer error: {e}")

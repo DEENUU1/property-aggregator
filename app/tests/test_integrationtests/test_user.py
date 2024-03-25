@@ -10,11 +10,67 @@ def test_success_return_201_status_code_register(client) -> None:
         "/api/v1/user/register",
         json={
             "email": "test@example.com",
-            "password": "test",
+            "password": "Test123@",
             "username": "test",
         },
     )
     assert response.status_code == 201
+
+
+def test_error_return_400_status_code_register_invalid_password_7_character(client) -> None:
+    test_client, db_session = client
+
+    response = test_client.post(
+        "/api/v1/user/register",
+        json={
+            "email": "test@example.com",
+            "password": "Test123",
+            "username": "test",
+        },
+    )
+    assert response.status_code == 400
+
+
+def test_error_return_400_status_code_register_invalid_password_no_upper_letters(client) -> None:
+    test_client, db_session = client
+
+    response = test_client.post(
+        "/api/v1/user/register",
+        json={
+            "email": "test@example.com",
+            "password": "test123@",
+            "username": "test",
+        },
+    )
+    assert response.status_code == 400
+
+
+def test_error_return_400_status_code_register_invalid_password_no_special_characters(client) -> None:
+    test_client, db_session = client
+
+    response = test_client.post(
+        "/api/v1/user/register",
+        json={
+            "email": "test@example.com",
+            "password": "Test1234",
+            "username": "test",
+        },
+    )
+    assert response.status_code == 400
+
+
+def test_error_return_400_status_code_register_invalid_password_no_digits(client) -> None:
+    test_client, db_session = client
+
+    response = test_client.post(
+        "/api/v1/user/register",
+        json={
+            "email": "test@example.com",
+            "password": "Testtest@",
+            "username": "test",
+        },
+    )
+    assert response.status_code == 400
 
 
 def test_error_return_status_code_400_register_create_user_with_already_used_email_address(client) -> None:

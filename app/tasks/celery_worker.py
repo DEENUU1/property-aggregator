@@ -18,7 +18,7 @@ celery_app = Celery(
 
 celery_app.conf.beat_schedule = {
     "create_notification": {
-        "task": "create_notification",
+        "task": "create_notifications",
         "schedule": crontab(minute="0", hour="0")
     }
 }
@@ -35,6 +35,9 @@ def create_notifications(db: Session) -> None:
     notification_filters = NotificationFilterService(db).get_all_active()
 
     for notification_filter in notification_filters:
+        if notification_filter.user_id is None:
+            continue
+
         offers = OfferService(db).get_all(
             offset=1,
             page_size=100,

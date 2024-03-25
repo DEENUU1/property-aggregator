@@ -4,6 +4,8 @@ from starlette.middleware.cors import CORSMiddleware
 from config.settings import settings
 from routers.api import router
 from utils.init_db import create_tables
+from tasks.celery_worker import create_notifications
+from config.database import get_db
 
 app = FastAPI(
     debug=bool(settings.DEBUG),
